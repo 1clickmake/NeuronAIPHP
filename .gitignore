@@ -1,3 +1,6 @@
+# Antigravity AI Assistant
+.antigravity/
+
 # Environment Configuration
 .env
 .env.local
