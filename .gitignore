@@ -60,3 +60,13 @@ yarn-error.log
 
 # PHPStorm
 .phpunit.result.cache
+
+# Development and Temporary Files (Root Level Only)
+/.env.example
+/.htaccess
+/CHECKLIST.md
+/GITHUB_UPLOAD_GUIDE.md
+/READY_TO_UPLOAD.md
+/REFACTOR_PLAN.md
+/project.txt
+/upload-to-github.ps1
