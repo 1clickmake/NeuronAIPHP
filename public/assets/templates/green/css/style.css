@@ -1,36 +1,123 @@
-/* Corona Template Custom Styles - Warm Orange/Red Theme */
+/* Green Template Custom Styles - Nature Eco-Friendly Theme (Emerald/Lime) */
 :root {
-    --primary: #f97316 !important;
-    /* Orange */
-    --primary-dark: #ea580c !important;
-    --gradient-start: #f97316 !important;
-    --gradient-end: #dc2626 !important;
-    /* Red */
+    --primary: #10b981 !important;
+    /* Emerald */
+    --primary-dark: #059669 !important;
+    --gradient-start: #84cc16 !important;
+    /* Lime */
+    --gradient-end: #059669 !important;
+    /* Dark Emerald */
+    --green-glow: rgba(16, 185, 129, 0.3);
+}
+
+body {
+    background: radial-gradient(circle at bottom left, #0a3d2c, #051612) !important;
+    position: relative;
+}
+
+/* Organic Nature Background */
+body::before {
+    content: '';
+    position: fixed;
+    bottom: -30%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at bottom,
+            rgba(132, 204, 22, 0.08) 0%,
+            rgba(16, 185, 129, 0.06) 30%,
+            rgba(5, 150, 105, 0.03) 60%,
+            transparent 80%);
+    pointer-events: none;
+    z-index: -1;
+    animation: naturalBreath 10s ease-in-out infinite;
+}
+
+@keyframes naturalBreath {
+
+    0%,
+    100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
 }
 
 .glass-card {
-    border: 1px solid rgba(249, 115, 22, 0.2) !important;
-    background: rgba(30, 41, 59, 0.4) !important;
+    border: 1px solid rgba(16, 185, 129, 0.25) !important;
+    background: rgba(10, 61, 44, 0.4) !important;
+    backdrop-filter: blur(20px) !important;
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.1) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .glass-card:hover {
-    border-color: rgba(249, 115, 22, 0.5) !important;
-    box-shadow: 0 10px 40px rgba(249, 115, 22, 0.2) !important;
+    border-color: rgba(16, 185, 129, 0.6) !important;
+    box-shadow: 0 15px 50px var(--green-glow) !important;
+    transform: translateY(-5px) scale(1.01) !important;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #f97316, #dc2626) !important;
+    background: linear-gradient(135deg, #84cc16, #10b981, #059669) !important;
+    border: none !important;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3) !important;
+    transition: all 0.35s ease !important;
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px) scale(1.02) !important;
-    box-shadow: 0 12px 35px rgba(249, 115, 22, 0.4) !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 15px 45px rgba(16, 185, 129, 0.5) !important;
 }
 
 h1,
-h2 {
-    background: linear-gradient(135deg, #f97316, #dc2626);
+h2,
+h3 {
+    background: linear-gradient(135deg, #84cc16, #10b981, #059669);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+
+/* Navbar Green Style */
+.navbar {
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border-bottom: 1px solid rgba(16, 185, 129, 0.2) !important;
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.05), transparent) !important;
+}
+
+.navbar a:hover {
+    color: #10b981 !important;
+}
+
+/* Leaf floating animation */
+@keyframes leafFloat {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-15px) rotate(5deg);
+    }
+
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+}
+
+/* Organic growth effect */
+@keyframes grow {
+    from {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }

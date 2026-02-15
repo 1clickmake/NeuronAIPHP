@@ -1,36 +1,130 @@
-/* Corona Template Custom Styles - Warm Orange/Red Theme */
+/* Corona Template Custom Styles - Warm Orange/Red/Gold (Sun Corona) Theme */
 :root {
     --primary: #f97316 !important;
     /* Orange */
     --primary-dark: #ea580c !important;
-    --gradient-start: #f97316 !important;
+    --gradient-start: #fbbf24 !important;
+    /* Gold */
     --gradient-end: #dc2626 !important;
     /* Red */
+    --corona-glow: rgba(249, 115, 22, 0.4);
+}
+
+body {
+    background: radial-gradient(circle at top center, #1e1b4b, #0f0a1f) !important;
+    position: relative;
+}
+
+/* Animated Sun Corona Effect */
+body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle,
+            rgba(251, 191, 36, 0.08) 0%,
+            rgba(249, 115, 22, 0.06) 25%,
+            rgba(220, 38, 38, 0.03) 50%,
+            transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+    animation: coronaPulse 8s ease-in-out infinite;
+}
+
+@keyframes coronaPulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+        transform: translateX(-50%) scale(1);
+    }
+
+    50% {
+        opacity: 0.9;
+        transform: translateX(-50%) scale(1.1);
+    }
 }
 
 .glass-card {
-    border: 1px solid rgba(249, 115, 22, 0.2) !important;
-    background: rgba(30, 41, 59, 0.4) !important;
+    border: 1px solid rgba(249, 115, 22, 0.25) !important;
+    background: rgba(30, 27, 75, 0.5) !important;
+    backdrop-filter: blur(20px) !important;
+    box-shadow: 0 8px 32px rgba(249, 115, 22, 0.1) !important;
+    transition: all 0.4s ease !important;
 }
 
 .glass-card:hover {
-    border-color: rgba(249, 115, 22, 0.5) !important;
-    box-shadow: 0 10px 40px rgba(249, 115, 22, 0.2) !important;
+    border-color: rgba(249, 115, 22, 0.6) !important;
+    box-shadow: 0 15px 50px var(--corona-glow) !important;
+    transform: translateY(-5px) scale(1.02) !important;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #f97316, #dc2626) !important;
+    background: linear-gradient(135deg, #fbbf24, #f97316, #dc2626) !important;
+    border: none !important;
+    box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4) !important;
+    transition: all 0.35s ease !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+}
+
+.btn-primary:hover::before {
+    width: 300px;
+    height: 300px;
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px) scale(1.02) !important;
-    box-shadow: 0 12px 35px rgba(249, 115, 22, 0.4) !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 15px 45px rgba(249, 115, 22, 0.6) !important;
 }
 
 h1,
-h2 {
-    background: linear-gradient(135deg, #f97316, #dc2626);
+h2,
+h3 {
+    background: linear-gradient(135deg, #fbbf24, #f97316, #dc2626);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-shadow: 0 0 30px rgba(249, 115, 22, 0.3);
+}
+
+/* Navbar Corona Style */
+.navbar {
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border-bottom: 1px solid rgba(249, 115, 22, 0.2) !important;
+    background: linear-gradient(180deg, rgba(249, 115, 22, 0.05), transparent) !important;
+}
+
+.navbar a:hover {
+    color: #f97316 !important;
+}
+
+/* Floating particles effect */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
 }
