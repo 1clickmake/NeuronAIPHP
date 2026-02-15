@@ -1,0 +1,36 @@
+/* Corona Template Custom Styles - Warm Orange/Red Theme */
+:root {
+    --primary: #f97316 !important;
+    /* Orange */
+    --primary-dark: #ea580c !important;
+    --gradient-start: #f97316 !important;
+    --gradient-end: #dc2626 !important;
+    /* Red */
+}
+
+.glass-card {
+    border: 1px solid rgba(249, 115, 22, 0.2) !important;
+    background: rgba(30, 41, 59, 0.4) !important;
+}
+
+.glass-card:hover {
+    border-color: rgba(249, 115, 22, 0.5) !important;
+    box-shadow: 0 10px 40px rgba(249, 115, 22, 0.2) !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #f97316, #dc2626) !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 12px 35px rgba(249, 115, 22, 0.4) !important;
+}
+
+h1,
+h2 {
+    background: linear-gradient(135deg, #f97316, #dc2626);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}

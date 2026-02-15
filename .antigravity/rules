@@ -1,0 +1,46 @@
+# Antigravity Project Rules
+
+## 1. Architecture & Structure
+- **MVC Pattern**: Strictly follow Model-View-Controller architecture.
+- **Namespaces**: Use PSR-4 autoloading.
+  - Controllers: namespace `App\Controllers`
+  - Core: namespace `App\Core`
+  - Services: namespace `App\Services`
+- **Directory Structure**:
+  - `app/`: Core application logic (Controllers, Services, Core classes).
+  - `views/`: View templates (separated by entity/folder).
+  - `public/`: Web root (index.php, assets, uploads).
+  - `config/`: Configuration files (routes.php, database credentials logic).
+
+## 2. Coding Standards
+- **Database**: 
+  - ALWAYS use `App\Core\Database::getInstance()` to get the PDO connection.
+  - DO NOT use the deprecated `Database` class in global namespace.
+  - Use prepared statements (`prepare()`, `execute()`) for ALL queries with parameters.
+- **Paths**:
+  - Use defined constants (`CM_APP_PATH`, `CM_VIEWS_PATH`, etc.) instead of hardcoded strings.
+  - Do NOT use relative paths like `../../` for including core files.
+- **View Rendering**:
+  - Use `App\Core\View::render()` in controllers.
+  - Use `include_header($siteConfig)` and `include_footer($siteConfig)` helpers in view files.
+
+## 3. Security Requirements
+- **CSRF Protection**:
+  - All forms and state-changing POST requests MUST include a generic CSRF check.
+  - Controller: `if (!App\Core\Csrf::verify($_POST['csrf_token'] ?? '')) ...`
+  - View (Form): `<input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">`
+  - View (AJAX): Include `csrf_token` in the data payload or headers.
+- **XSS Prevention**:
+  - `App\Core\View` automatically escapes variables.
+  - Use `htmlspecialchars()` manually if echoing data outside the View class context.
+- **File Uploads**:
+  - ALWAYS use `App\Services\FileService` for handling uploads.
+  - Verify file extensions and MIME types.
+  - Store uploads in `public/data/` structured by board/entity.
+
+## 4. UI/UX
+- **Design System**: Use the "Glassmorphism" dark theme ($glass-bg, $primary-color) as defined in `index.css`.
+- **Feedback**: Provide visual feedback (alerts, modals) for user actions.
+
+## 5. Communication
+- **Language**: All responses and explanations must be provided in Korean (한국어) whenever possible.
