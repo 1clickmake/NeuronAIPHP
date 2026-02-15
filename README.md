@@ -202,6 +202,7 @@ ai_php/
 
 ## 🙏 감사의 말
 
+- [Neuron AI](https://neuron.ai/) - AI 기반 코드 개발 지원
 - [FastRoute](https://github.com/nikic/FastRoute) - 고속 라우팅
 - [Bootstrap](https://getbootstrap.com/) - UI 프레임워크
 - [Font Awesome](https://fontawesome.com/) - 아이콘
