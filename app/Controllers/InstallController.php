@@ -46,8 +46,8 @@ class InstallController extends BaseController {
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             // 2. Run setup.sql
-            if (file_exists(__DIR__ . '/../../setup.sql')) {
-                $sql = file_get_contents(__DIR__ . '/../../setup.sql');
+            if (file_exists(__DIR__ . '/../../views/install/setup.sql')) {
+                $sql = file_get_contents(__DIR__ . '/../../views/install/setup.sql');
                 // Remove USE statement from setup.sql if present to avoid conflicts
                 $sql = preg_replace('/USE `?ai_php`?;/i', '', $sql);
                 $pdo->exec($sql);
