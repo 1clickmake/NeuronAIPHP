@@ -63,7 +63,6 @@ yarn-error.log
 
 # Development and Temporary Files (Root Level Only)
 /.env.example
-/.htaccess
 /CHECKLIST.md
 /GITHUB_UPLOAD_GUIDE.md
 /READY_TO_UPLOAD.md
