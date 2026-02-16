@@ -24,16 +24,6 @@ function alert($msg, $url = '') {
     exit;
 }
 
-/**
- * Debugging helper
- */
-if (!function_exists('print_r2')) {
-    function print_r2($var) {
-        echo '<pre style="background:#000; color:#0f0; padding:10px; border-radius:5px; font-size:12px; z-index:9999; position:relative;">';
-        print_r($var);
-        echo '</pre>';
-    }
-}
 
 /**
  * Check if the current request is from a mobile device
