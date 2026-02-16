@@ -322,3 +322,85 @@ function check_rate_limit($action, $max_attempts = 5, $time_window = 60) {
     $_SESSION[$key]['count']++;
     return true;
 }
+
+/**
+ * Sanitize HTML to prevent XSS while allowing safe tags
+ */
+function clean_html($html) {
+    if (empty($html) || !is_string($html)) return '';
+
+    // If DOM extension is missing, fallback to strip_tags (better than nothing)
+    if (!class_exists('DOMDocument')) {
+        return strip_tags($html);
+    }
+
+    $dom = new DOMDocument();
+    // Disable error reporting for malformed HTML
+    libxml_use_internal_errors(true);
+    // Load HTML with UTF-8 encoding
+    // mb_convert_encoding handles encoding issues
+    $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    libxml_clear_errors();
+
+    $allowedTags = ['p', 'br', 'b', 'strong', 'i', 'em', 'u', 's', 'strike', 'ul', 'ol', 'li', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img', 'a', 'span', 'div', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'pre', 'code', 'font'];
+    $allowedAttributes = ['href', 'src', 'alt', 'title', 'class', 'style', 'target', 'width', 'height', 'align', 'valign', 'colspan', 'rowspan', 'border', 'cellpadding', 'cellspacing', 'color', 'size', 'face'];
+
+    $xpath = new DOMXPath($dom);
+
+    // Snapshot of nodes to avoid modification issues during iteration
+    $elements = [];
+    foreach ($xpath->query('//*') as $node) {
+        $elements[] = $node;
+    }
+
+    foreach ($elements as $node) {
+        if (!in_array($node->nodeName, $allowedTags)) {
+             $dangerousTags = ['script', 'iframe', 'object', 'embed', 'applet', 'meta', 'link', 'style', 'form', 'input', 'button', 'select', 'textarea', 'head', 'body', 'html'];
+             if (in_array($node->nodeName, $dangerousTags)) {
+                 $node->parentNode->removeChild($node);
+             } else {
+                 // Strip tag, keep content
+                 $fragment = $dom->createDocumentFragment();
+                 while ($node->childNodes->length > 0) {
+                     $fragment->appendChild($node->childNodes->item(0));
+                 }
+                 $node->parentNode->replaceChild($fragment, $node);
+             }
+             continue;
+        }
+
+        // Filter attributes
+        if ($node->hasAttributes()) {
+            $attributesToRemove = [];
+            foreach ($node->attributes as $attr) {
+                $attrName = strtolower($attr->name);
+                if (!in_array($attrName, $allowedAttributes)) {
+                    $attributesToRemove[] = $attr->name;
+                } else {
+                    $attrValue = strtolower(trim($attr->value));
+
+                    // Decode entities
+                    $decodedValue = html_entity_decode($attrValue, ENT_QUOTES, 'UTF-8');
+                    // Remove control characters
+                    $decodedValue = preg_replace('/[\x00-\x1F\x7F]/', '', $decodedValue);
+
+                    if (stripos($decodedValue, 'javascript:') !== false ||
+                        stripos($decodedValue, 'vbscript:') !== false ||
+                        stripos($decodedValue, 'file:') !== false) {
+                        $attributesToRemove[] = $attr->name;
+                    }
+                    if (stripos($decodedValue, 'data:') !== false) {
+                         if (stripos($decodedValue, 'data:image') !== 0) {
+                             $attributesToRemove[] = $attr->name;
+                         }
+                    }
+                }
+            }
+            foreach ($attributesToRemove as $attrName) {
+                $node->removeAttribute($attrName);
+            }
+        }
+    }
+
+    return $dom->saveHTML();
+}

@@ -27,9 +27,10 @@ class FileService {
                 $originalName = basename($name);
                 $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
                 
-                // Security check for extension
-                if (in_array($extension, ['php', 'php3', 'php4', 'phtml', 'exe', 'sh', 'bat'])) {
-                    continue; // Skip dangerous files
+                // Security check for extension (Whitelist)
+                $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'txt', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip'];
+                if (!in_array($extension, $allowedExtensions)) {
+                    continue; // Skip not allowed files
                 }
 
                 $newName = uniqid() . '.' . $extension;
@@ -77,8 +78,9 @@ class FileService {
             $originalName = basename($file['name']);
             $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
             
-            // Security check
-            if (in_array($extension, ['php', 'pl', 'py', 'asp', 'sh'])) {
+            // Security check (Whitelist - only images)
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            if (!in_array($extension, $allowedExtensions)) {
                 return ['error' => 'Invalid file type'];
             }
 

@@ -363,9 +363,12 @@ class BoardController extends BaseController {
         if (!empty($matches[1])) {
             foreach ($matches[1] as $src) {
                 // Only delete if it's a local path in /data/
-                if (strpos($src, '/data/') === 0) {
+                if (strpos($src, '/data/') === 0 && strpos($src, '..') === false) {
                     $filePath = CM_PUBLIC_PATH . $src;
-                    if (file_exists($filePath)) unlink($filePath);
+                    $realPath = realpath($filePath);
+                    if ($realPath && strpos($realPath, realpath(CM_PUBLIC_PATH . '/data/')) === 0) {
+                        if (file_exists($realPath)) unlink($realPath);
+                    }
                 }
             }
         }
@@ -426,9 +429,12 @@ class BoardController extends BaseController {
                 preg_match_all('/<img[^>]+src="([^">]+)"/i', $post['content'], $matches);
                 if (!empty($matches[1])) {
                     foreach ($matches[1] as $src) {
-                        if (strpos($src, '/data/') === 0) {
+                        if (strpos($src, '/data/') === 0 && strpos($src, '..') === false) {
                             $filePath = CM_PUBLIC_PATH . $src;
-                            if (file_exists($filePath)) unlink($filePath);
+                            $realPath = realpath($filePath);
+                            if ($realPath && strpos($realPath, realpath(CM_PUBLIC_PATH . '/data/')) === 0) {
+                                if (file_exists($realPath)) unlink($realPath);
+                            }
                         }
                     }
                 }
