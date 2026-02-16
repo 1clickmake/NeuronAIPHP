@@ -8,7 +8,7 @@
         <p style="color: rgba(255,255,255,0.8); font-size: 1.3rem; max-width: 700px; margin: 0 auto 1rem; animation: fadeInUp 0.8s ease 0.2s both;">
             Feel the refreshing breeze with cool cyan and sky blue tones.
         </p>
-        <p style="color: var(--text-muted); font-size: 1rem; max-width: 600px; margin: 0 auto; animation: fadeInUp 0.8s ease 0.3s both;">
+        <p style="color: rgba(255, 255, 255, 0.8); font-size: 1rem; max-width: 600px; margin: 0 auto; animation: fadeInUp 0.8s ease 0.3s both;">
             Perfect for modern, tech-focused, or ocean-inspired designs. Experience the smooth flow of creativity.
         </p>
         

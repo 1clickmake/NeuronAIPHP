@@ -185,10 +185,14 @@ function update_level($user_id) {
 /**
  * Generate pagination HTML
  */
+/**
+ * Generate pagination HTML
+ */
 function get_pagination($page, $totalPages, $search = '', $pageLimit = 5) {
     if ($totalPages <= 1) return '';
 
-    $html = '<div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 2rem; flex-wrap: wrap;">';
+    // Use .pagination-container class instead of inline styles
+    $html = '<div class="pagination-container">';
     
     $startPage = max(1, $page - floor($pageLimit / 2));
     $endPage = min($totalPages, $startPage + $pageLimit - 1);
@@ -201,21 +205,21 @@ function get_pagination($page, $totalPages, $search = '', $pageLimit = 5) {
 
     // First & Prev
     if ($page > 1) {
-        $html .= '<a href="?page=1' . $searchQuery . '" class="btn btn-sm" style="background: rgba(255,255,255,0.05); color: white;" title="First"><i class="fa-solid fa-angles-left"></i></a>';
-        $html .= '<a href="?page=' . ($page - 1) . $searchQuery . '" class="btn btn-sm" style="background: rgba(255,255,255,0.05); color: white;" title="Prev"><i class="fa-solid fa-angle-left"></i></a>';
+        $html .= '<a href="?page=1' . $searchQuery . '" class="btn btn-page" title="First"><i class="fa-solid fa-angles-left"></i></a>';
+        $html .= '<a href="?page=' . ($page - 1) . $searchQuery . '" class="btn btn-page" title="Prev"><i class="fa-solid fa-angle-left"></i></a>';
     }
 
     // Page Numbers
     for ($i = $startPage; $i <= $endPage; $i++) {
-        $activeClass = ($i == $page) ? 'btn-primary' : 'btn-sm';
-        $style = ($i != $page) ? 'style="background: rgba(255,255,255,0.05); color: white;"' : '';
-        $html .= "<a href=\"?page={$i}{$searchQuery}\" class=\"btn {$activeClass}\" {$style}>{$i}</a>";
+        // Use .btn-page-active for current page, .btn-page for others
+        $activeClass = ($i == $page) ? 'btn-page-active' : 'btn-page';
+        $html .= "<a href=\"?page={$i}{$searchQuery}\" class=\"btn {$activeClass}\">{$i}</a>";
     }
 
     // Next & Last
     if ($page < $totalPages) {
-        $html .= '<a href="?page=' . ($page + 1) . $searchQuery . '" class="btn btn-sm" style="background: rgba(255,255,255,0.05); color: white;" title="Next"><i class="fa-solid fa-angle-right"></i></a>';
-        $html .= '<a href="?page=' . $totalPages . $searchQuery . '" class="btn btn-sm" style="background: rgba(255,255,255,0.05); color: white;" title="Last"><i class="fa-solid fa-angles-right"></i></a>';
+        $html .= '<a href="?page=' . ($page + 1) . $searchQuery . '" class="btn btn-page" title="Next"><i class="fa-solid fa-angle-right"></i></a>';
+        $html .= '<a href="?page=' . $totalPages . $searchQuery . '" class="btn btn-page" title="Last"><i class="fa-solid fa-angles-right"></i></a>';
     }
 
     $html .= '</div>';

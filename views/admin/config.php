@@ -97,14 +97,13 @@
                     <div class="flex-gap-1">
                         <input type="text" id="new_template_name" class="form-control" placeholder="e.g. basic_luxury" style="flex: 1;">
                         <button type="button" onclick="createNewTemplate()" class="btn btn-success" style="white-space: nowrap;">
-                            <i class="fa-solid fa-plus-circle"></i> Create & Initialize
+                            <i class="fa-solid fa-plus-circle"></i> Create
                         </button>
                     </div>
                     <small class="help-text">
-                        Entering a name will automatically create: <br>
-                        - <code>views/templates/[name]/</code> (header, footer, main) <br>
-                        - <code>public/assets/templates/[name]/css/style.css</code> <br>
-                        - <code>public/assets/templates/[name]/js/script.js</code>
+                        Entering a name will automatically copy all files from <code>basic</code> template to: <br>
+                        - <code>views/templates/[name]/</code> <br>
+                        - <code>public/assets/templates/[name]/</code>
                     </small>
                 </div>
                 <div class="col-md-4" style="text-align: right;">

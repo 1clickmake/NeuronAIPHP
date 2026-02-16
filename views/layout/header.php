@@ -13,9 +13,6 @@
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-	<!-- 기본 템플릿 스타일 css-->
-	<link href="<?= CM_BASE_URL ?>/css/basic.css?v=<?= filemtime(CM_PUBLIC_PATH . '/css/basic.css') ?>" rel="stylesheet">
-	
 	<!-- 템플릿 전용 CSS 동적 로드 -->
     <?= load_template_assets($siteConfig ?? []) ?>
 </head>

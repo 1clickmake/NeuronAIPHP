@@ -651,32 +651,17 @@ class AdminController extends BaseController {
         }
 
         // 1. Create Views Folder and Copy from 'basic'
-        $sourcePath = CM_VIEWS_PATH . '/templates/basic';
-        $viewPath = CM_VIEWS_PATH . '/templates/' . $name;
-        
-        if (!is_dir($viewPath)) {
-            if (is_dir($sourcePath)) {
-                $this->recursiveCopy($sourcePath, $viewPath);
-            } else {
-                // Fallback if basic doesn't exist (safety)
-                mkdir($viewPath, 0777, true);
-                file_put_contents($viewPath . '/header.php', "<?php\n// " . ucfirst($name) . " Template Header\ninclude CM_LAYOUT_PATH . '/header.php';\n?>");
-                file_put_contents($viewPath . '/footer.php', "<?php\n// " . ucfirst($name) . " Template Footer\ninclude CM_LAYOUT_PATH . '/footer.php';\n?>");
-                file_put_contents($viewPath . '/main.php', "<?php \$title = '" . ucfirst($name) . "'; include_header(\$title, \$siteConfig); ?>\n\n<div class=\"container\">\n    <h1>Welcome to " . ucfirst($name) . " Theme</h1>\n</div>\n\n<?php include_footer(\$siteConfig); ?>");
-            }
+        $sourceViewPath = CM_VIEWS_PATH . '/templates/basic';
+        $targetViewPath = CM_VIEWS_PATH . '/templates/' . $name;
+        if (!is_dir($targetViewPath) && is_dir($sourceViewPath)) {
+            $this->recursiveCopy($sourceViewPath, $targetViewPath);
         }
 
-        // 2. Create Public Assets Folder and Files
-        $assetPath = CM_ASSET_PATH . '/templates/' . $name;
-        if (!is_dir($assetPath . '/css')) mkdir($assetPath . '/css', 0777, true);
-        if (!is_dir($assetPath . '/js')) mkdir($assetPath . '/js', 0777, true);
-
-        if (!file_exists($assetPath . '/css/style.css')) {
-            file_put_contents($assetPath . '/css/style.css', "/* " . ucfirst($name) . " Template Style */\n:root {\n    --primary: #6366f1;\n}\n\nbody {\n    /* Custom background or styles */\n}");
-        }
-
-        if (!file_exists($assetPath . '/js/script.js')) {
-            file_put_contents($assetPath . '/js/script.js', "// " . ucfirst($name) . " Template Script\nconsole.log('" . $name . " template loaded!');");
+        // 2. Create Public Assets Folder and Copy from 'basic'
+        $sourceAssetPath = CM_ASSET_PATH . '/templates/basic';
+        $targetAssetPath = CM_ASSET_PATH . '/templates/' . $name;
+        if (!is_dir($targetAssetPath) && is_dir($sourceAssetPath)) {
+            $this->recursiveCopy($sourceAssetPath, $targetAssetPath);
         }
 
         $this->redirect('/admin/config?msg=Template created successfully');

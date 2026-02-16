@@ -3,74 +3,113 @@
 include CM_LAYOUT_PATH . '/header.php';
 ?>
 
-<style>
-/* Corona Header Enhancements */
-.navbar {
-    background: linear-gradient(135deg, rgba(251, 191, 36, 0.08), rgba(249, 115, 22, 0.05)) !important;
-    box-shadow: 0 4px 20px rgba(249, 115, 22, 0.1) !important;
-}
+    <nav class="navbar">
+        <div class="mobile-user-actions">
+            <?php if (isset($_SESSION['user'])): ?>
+                <a href="/mypage" title="My Page"><i class="fa-regular fa-user"></i></a>
+            <?php else: ?>
+                <a href="/login" title="Login"><i class="fa-regular fa-user"></i></a>
+            <?php endif; ?>
+        </div>
 
-.navbar-brand {
-    font-weight: 800 !important;
-    background: linear-gradient(135deg, #fbbf24, #f97316, #dc2626);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    transition: all 0.3s ease !important;
-    text-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
-}
+        <a href="/" class="navbar-brand">
+            <?php if (($siteConfig['logo_type'] ?? 'text') === 'image' && !empty($siteConfig['logo_image'])): ?>
+                <img src="<?= $siteConfig['logo_image'] ?>" alt="<?= htmlspecialchars($siteConfig['site_name']) ?>" style="max-height: 40px;">
+            <?php else: ?>
+                <?= htmlspecialchars(!empty($siteConfig['logo_text']) ? $siteConfig['logo_text'] : ($siteConfig['site_name'] ?? 'NEURON AI')) ?>
+            <?php endif; ?>
+        </a>
 
-.navbar-brand:hover {
-    transform: scale(1.08);
-    filter: brightness(1.3) drop-shadow(0 0 10px rgba(251, 191, 36, 0.5));
-}
+        <div class="navbar-actions">
+            <div class="nav-links">
+                <?php if (isset($_SESSION['user'])): ?>
+                    <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+                        <a href="/admin"><i class="fa-solid fa-gauge-high"></i> Admin Panel</a>
+                    <?php endif; ?>
+                    <a href="/mypage" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: none;" class="username-link">
+                        <i class="fa-solid fa-circle-user"></i> <?= htmlspecialchars($_SESSION['user']['username']) ?>
+                    </a>
+                    <a href="/logout" class="btn btn-primary" style="background: #ef4444; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);">Logout</a>
+                <?php else: ?>
+                    <a href="/login">Login</a>
+                    <a href="/register" class="btn btn-primary">Sign Up</a>
+                <?php endif; ?>
+            </div>
 
-.nav-links a {
-    position: relative;
-    transition: all 0.3s ease !important;
-}
+            <button class="sidebar-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </nav>
 
-.nav-links a::before {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #fbbf24, #f97316);
-    transition: width 0.3s ease;
-    box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
-}
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel" style="z-index: 9999;">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="mobileMenuLabel">MENU</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="d-flex flex-column">
+                
+                <?php if (isset($_SESSION['user'])): ?>
+                    <div style="background: rgba(255,255,255,0.05); padding: 1.25rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 1rem;">
+                            <i class="fa-solid fa-circle-user" style="font-size: 2rem; color: var(--text-muted);"></i>
+                            <div style="text-align: left;">
+                                <div style="font-size: 1rem; font-weight: 600; color: white;">
+                                    <?= htmlspecialchars($_SESSION['user']['username']) ?>
+                                </div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">
+                                    <?= $_SESSION['user']['role'] === 'admin' ? 'Administrator' : 'Member' ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+                                <a href="/admin" class="btn btn-sm btn-primary w-100">Admin</a>
+                            <?php endif; ?>
+                            <a href="/mypage" class="btn btn-sm w-100" style="background: #a855f7; color: white; border: none;">My Page</a>
+                            <a href="/logout" class="btn btn-sm btn-danger w-100">Logout</a>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div style="background: rgba(255,255,255,0.05); padding: 1.25rem; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.1); text-align: center;">
+                        <h6 style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">Welcome to <?= htmlspecialchars($siteConfig['site_name']) ?></h6>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a href="/login" class="btn btn-primary w-100" style="background: var(--primary); border: none;">Login</a>
+                            <a href="/register" class="btn w-100" style="background: #a855f7; color: white; border: none;">Sign Up</a>
+                        </div>
+                    </div>
+                <?php endif; ?>
 
-.nav-links a:hover::before {
-    width: 100%;
-}
+                <a href="/" class="mobile-nav-item">
+                    <i class="fa-solid fa-house"></i> Home 
+                </a>
+                
+                <?php
+                if (!isset($groups)) {
+                    $db = \App\Core\Database::getInstance();
+                    $stmt = $db->query("SELECT * FROM board_groups ORDER BY id ASC");
+                    $groups = $stmt ? $stmt->fetchAll() : [];
+                    foreach ($groups as &$group) {
+                        $stmt = $db->prepare("SELECT * FROM boards WHERE group_id = :id ORDER BY id ASC");
+                        $stmt->execute(['id' => $group['id']]);
+                        $group['boards'] = $stmt->fetchAll();
+                    }
+                }
+                ?>
+                
+                <?php foreach ($groups as $group): ?>
+                    <div style="margin: 1rem 0 0.5rem; padding-left: 1rem; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">
+                        <?= htmlspecialchars($group['name']) ?>
+                    </div>
+                    <?php foreach ($group['boards'] as $board): ?>
+                        <a href="/board/<?= $board['slug'] ?>" class="mobile-nav-item">
+                            <i class="fa-solid fa-list-ul"></i> <?= htmlspecialchars($board['title']) ?>
+                        </a>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
 
-.nav-links a:hover {
-    color: #f97316 !important;
-    text-shadow: 0 0 15px rgba(249, 115, 22, 0.5);
-}
 
-.btn-primary {
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-primary::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-}
-
-.btn-primary:hover::after {
-    width: 300px;
-    height: 300px;
-}
-</style>

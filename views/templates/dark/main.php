@@ -8,12 +8,12 @@
             <span style="background: rgba(99, 102, 241, 0.1); color: var(--primary); padding: 0.5rem 1.2rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600; border: 1px solid rgba(99, 102, 241, 0.2);">
                 Active Template: <?= ucfirst($siteConfig['template'] ?? 'Basic') ?>
             </span>
-            <p style="margin-top: 1rem; color: var(--text-muted); font-style: italic;">
+            <p style="margin-top: 1rem; color: rgba(255, 255, 255, 0.8); font-style: italic;">
                 "Congratulations! Your new template has been successfully initialized and is ready for customization."
             </p>
         </div>
 
-        <p style="color: var(--text-muted); font-size: 1.2rem; max-width: 700px; margin: 0 auto;">
+        <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.2rem; max-width: 700px; margin: 0 auto;">
             A lightweight, high-performance PHP 8.1+ framework integration demo. 
             Powered by Neuron AI for intelligent agent orchestration and a glassmorphism admin dashboard.
         </p>
@@ -33,9 +33,9 @@
                 
                 <div style="display: flex; flex-direction: column; gap: 0.75rem;">
                         <?php foreach ($group['boards'] as $board): ?>
-                            <a href="/board/<?= $board['slug'] ?>" class="board-item-link">
-                                <div><?= htmlspecialchars($board['title']) ?></div>
-                                <div><?= htmlspecialchars($board['description']) ?></div>
+                            <a href="/board/<?= $board['slug'] ?>" style="background: rgba(255,255,255,0.03); padding: 0.75rem 1rem; border-radius: 8px; text-decoration: none; color: white; border: 1px solid transparent; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--primary)'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='transparent'; this.style.transform='none'">
+                                <div style="font-weight: 600;"><?= htmlspecialchars($board['title']) ?></div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);"><?= htmlspecialchars($board['description']) ?></div>
                             </a>
                         <?php endforeach; ?>
                 </div>

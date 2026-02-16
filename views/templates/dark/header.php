@@ -1,9 +1,8 @@
 <?php
-// Green 템플릿 전용 헤더 - 자연처럼 신선한 녹색
 include CM_LAYOUT_PATH . '/header.php';
 ?>
-
     <nav class="navbar">
+        <!-- Mobile Left: Login Icons -->
         <div class="mobile-user-actions">
             <?php if (isset($_SESSION['user'])): ?>
                 <a href="/mypage" title="My Page"><i class="fa-regular fa-user"></i></a>
@@ -12,6 +11,8 @@ include CM_LAYOUT_PATH . '/header.php';
             <?php endif; ?>
         </div>
 
+        <!-- PC Left Dummy (Not needed in grid but helps spacing in PC if flex) -->
+        <!-- Center: Logo -->
         <a href="/" class="navbar-brand">
             <?php if (($siteConfig['logo_type'] ?? 'text') === 'image' && !empty($siteConfig['logo_image'])): ?>
                 <img src="<?= $siteConfig['logo_image'] ?>" alt="<?= htmlspecialchars($siteConfig['site_name']) ?>" style="max-height: 40px;">
@@ -20,7 +21,9 @@ include CM_LAYOUT_PATH . '/header.php';
             <?php endif; ?>
         </a>
 
+        <!-- PC & Mobile Right Actions -->
         <div class="navbar-actions">
+            <!-- PC Nav Links -->
             <div class="nav-links">
                 <?php if (isset($_SESSION['user'])): ?>
                     <?php if ($_SESSION['user']['role'] === 'admin'): ?>
@@ -36,12 +39,14 @@ include CM_LAYOUT_PATH . '/header.php';
                 <?php endif; ?>
             </div>
 
+            <!-- Hamburger Toggle (Shown on Mobile) -->
             <button class="sidebar-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
                 <i class="fa-solid fa-bars"></i>
             </button>
         </div>
     </nav>
 
+    <!-- Offcanvas Mobile Menu -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel" style="z-index: 9999;">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="mobileMenuLabel">MENU</h5>
@@ -50,6 +55,7 @@ include CM_LAYOUT_PATH . '/header.php';
         <div class="offcanvas-body">
             <div class="d-flex flex-column">
                 
+                <!-- User Profile / Auth Links -->
                 <?php if (isset($_SESSION['user'])): ?>
                     <div style="background: rgba(255,255,255,0.05); padding: 1.25rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
                         <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 1rem;">
@@ -86,10 +92,10 @@ include CM_LAYOUT_PATH . '/header.php';
                 </a>
                 
                 <?php
+                // Ensure $groups is available
                 if (!isset($groups)) {
                     $db = \App\Core\Database::getInstance();
-                    $stmt = $db->query("SELECT * FROM board_groups ORDER BY id ASC");
-                    $groups = $stmt ? $stmt->fetchAll() : [];
+                    $groups = $db->query("SELECT * FROM board_groups ORDER BY id ASC")->fetchAll();
                     foreach ($groups as &$group) {
                         $stmt = $db->prepare("SELECT * FROM boards WHERE group_id = :id ORDER BY id ASC");
                         $stmt->execute(['id' => $group['id']]);
@@ -110,6 +116,4 @@ include CM_LAYOUT_PATH . '/header.php';
                 <?php endforeach; ?>
             </div>
         </div>
-    </div>
-
-
+    </div> 

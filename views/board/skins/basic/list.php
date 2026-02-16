@@ -21,7 +21,7 @@
 
     <div class="glass-card">
 		<div class="table-responsive">
-			<table class="table table-dark table-hover table-striped text-center" style="min-width:1000px;">
+			<table class="table table-hover table-striped text-center" style="min-width:1000px;">
 				<thead>
 					<tr>
 						<?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>

@@ -12,7 +12,7 @@
         <p style="color: rgba(255,255,255,0.85); font-size: 1.3rem; max-width: 700px; margin: 0 auto 1rem; animation: fadeInUp 0.8s ease 0.2s both;">
             Experience a fresh, eco-friendly design with vibrant green accents.
         </p>
-        <p style="color: var(--text-muted); font-size: 1rem; max-width: 650px; margin: 0 auto; animation: fadeInUp 0.8s ease 0.3s both;">
+        <p style="color: rgba(255, 255, 255, 0.8); font-size: 1rem; max-width: 600px; margin: 0 auto; animation: fadeInUp 0.8s ease 0.3s both;">
             Perfect for nature-focused or sustainability-themed websites. Embrace the harmony of organic growth.
         </p>
         
