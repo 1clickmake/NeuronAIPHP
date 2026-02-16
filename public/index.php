@@ -112,6 +112,9 @@ if (file_exists($envPath) && !str_starts_with($internalUri, '/install')) {
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     $routes = require __DIR__ . '/../app/routes.php';
     $routes($r);
+
+    // Register Plugin Routes
+    \App\Core\PluginManager::getInstance()->registerRoutes($r);
 });
 
 // Fetch method and URI from somewhere

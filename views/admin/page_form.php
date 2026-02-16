@@ -29,12 +29,15 @@ include CM_LAYOUT_PATH . '/admin_header.php';
         <div class="form-group" style="margin-bottom: 2rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
                 <label class="form-label" style="margin-bottom: 0;">Page Content</label>
-                <div class="btn-group" role="group" style="background: rgba(255,255,255,0.1); padding: 4px; border-radius: 8px;">
-                    <input type="radio" class="btn-check" name="editor_mode" id="mode_visual" value="visual" checked autocomplete="off">
-                    <label class="btn btn-sm" for="mode_visual" style="color: white; border: none; padding: 0.35rem 1rem;">Visual</label>
-
-                    <input type="radio" class="btn-check" name="editor_mode" id="mode_html" value="html" autocomplete="off">
-                    <label class="btn btn-sm" for="mode_html" style="color: white; border: none; padding: 0.25rem 0.75rem;">HTML</label>
+                <div class="d-flex align-items-center gap-2">
+                    <?php do_action('admin_page_form_content_tools'); ?>
+                    <div class="btn-group" role="group" style="background: rgba(255,255,255,0.1); padding: 4px; border-radius: 8px;">
+                        <input type="radio" class="btn-check" name="editor_mode" id="mode_visual" value="visual" checked autocomplete="off">
+                        <label class="btn btn-sm" for="mode_visual" style="color: white; border: none; padding: 0.35rem 1rem;">Visual</label>
+    
+                        <input type="radio" class="btn-check" name="editor_mode" id="mode_html" value="html" autocomplete="off">
+                        <label class="btn btn-sm" for="mode_html" style="color: white; border: none; padding: 0.25rem 0.75rem;">HTML</label>
+                    </div>
                 </div>
             </div>
 
@@ -58,6 +61,8 @@ include CM_LAYOUT_PATH . '/admin_header.php';
         </div>
     </form>
 </div>
+
+<?php do_action('admin_page_form_after_form'); ?>
 
 <script>
     $('#link-pages').addClass('active');
@@ -95,6 +100,9 @@ include CM_LAYOUT_PATH . '/admin_header.php';
             placeholder: 'Write your page content here...',
             theme: 'snow'
         });
+
+        // Expose quill globally so plugins can interact with it
+        window.pageEditor = quill;
 
         // Set initial content
         const initialContent = $('#html_content').val();
@@ -169,6 +177,9 @@ include CM_LAYOUT_PATH . '/admin_header.php';
                 $('#content_input').val(quill.root.innerHTML);
             }
         });
+
+        // Let plugins add their own JS logic
+        <?php do_action('admin_page_form_scripts'); ?>
     });
 </script>
 

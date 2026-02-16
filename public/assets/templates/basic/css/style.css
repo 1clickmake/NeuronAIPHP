@@ -1872,6 +1872,57 @@ p {
 }
 
 /* ==========================================================================
+   PAGE STYLES
+   ========================================================================== */
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.page-card {
+    background: rgba(220, 223, 228, 0.4);
+    min-height: 400px;
+}
+
+.page-content {
+    color: #e3e7ec;
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+
+.page-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.page-content h1,
+.page-content h2,
+.page-content h3 {
+    color: white;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.page-content a {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+.page-content blockquote {
+    border-left: 4px solid var(--primary);
+    padding-left: 1.5rem;
+    margin: 2rem 0;
+    font-style: italic;
+    background: rgba(99, 102, 241, 0.05);
+    padding: 1.5rem;
+    border-radius: 0 12px 12px 0;
+}
+
+/* ==========================================================================
    PREMIUM FOOTER STYLES
    ========================================================================== */
 .premium-footer {

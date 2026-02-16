@@ -14,6 +14,7 @@ define('CM_LIB_DIR',     'lib');
 define('CM_PUBLIC_DIR',  'public');
 define('CM_VIEWS_DIR',   'views');
 define('CM_DATA_DIR',    'data');
+define('CM_PLUGINS_DIR', 'plugins');
 
 // Absolute Path Constants
 define('CM_APP_PATH',       CM_PATH . '/' . CM_APP_DIR);
@@ -23,6 +24,7 @@ define('CM_PUBLIC_PATH',    CM_PATH . '/' . CM_PUBLIC_DIR);
 define('CM_CONFIG_PATH',    CM_PATH . '/' . CM_CONFIG_DIR);
 define('CM_DATA_PATH',      CM_PUBLIC_PATH . '/' . CM_DATA_DIR);
 define('CM_ASSET_PATH',     CM_PUBLIC_PATH . '/assets');
+define('CM_PLUGINS_PATH',   CM_PATH . '/' . CM_PLUGINS_DIR);
 
 // Layout & Template Paths
 define('CM_LAYOUT_PATH',      CM_VIEWS_PATH . '/layout');

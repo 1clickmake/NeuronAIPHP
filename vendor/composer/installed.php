@@ -3,7 +3,7 @@
         'name' => 'ai-php/project',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'be3e3454829b998a79585a45a6b9586dc8c4eace',
+        'reference' => 'c07e5d7e667806bba337cd9eabd75122b8fdc120',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'ai-php/project' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'be3e3454829b998a79585a45a6b9586dc8c4eace',
+            'reference' => 'c07e5d7e667806bba337cd9eabd75122b8fdc120',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

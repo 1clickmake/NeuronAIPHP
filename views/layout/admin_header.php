@@ -14,6 +14,7 @@
     <link href="/css/admin.css?v=<?php echo filemtime(CM_PUBLIC_PATH . '/css/admin.css'); ?>" rel="stylesheet">
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-4.0.0-beta.min.js"></script>
+    <meta name="csrf-token" content="<?= $csrf_token ?? '' ?>">
 </head>
 <body class="admin-body">
 
@@ -55,6 +56,18 @@
             <a href="/admin/visitors" id="link-visitors">
                 <i class="fa-solid fa-chart-line"></i> Visitors
             </a>
+
+            <?php 
+            $pluginMenuItems = \App\Core\PluginManager::getInstance()->getAdminMenuItems();
+            if (!empty($pluginMenuItems)): 
+            ?>
+            <div class="nav-category">Plugins</div>
+            <?php foreach ($pluginMenuItems as $item): ?>
+                <a href="<?= $item['url'] ?>" id="<?= $item['id'] ?>">
+                    <i class="<?= $item['icon'] ?>"></i> <?= $item['title'] ?>
+                </a>
+            <?php endforeach; ?>
+            <?php endif; ?>
 
             <div class="nav-category">System</div>
             <a href="/" target="_blank" style="margin-top: auto; background: rgba(255,255,255,0.03);">

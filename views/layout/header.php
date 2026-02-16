@@ -15,6 +15,6 @@
 
 	<!-- 템플릿 전용 CSS 동적 로드 -->
     <?= load_template_assets($siteConfig ?? []) ?>
+    <?php do_action('public_head'); ?>
 </head>
 <body>
-

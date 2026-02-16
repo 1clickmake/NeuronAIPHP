@@ -5,13 +5,16 @@ namespace App\Core;
 class View {
     public static function render($path, $data = []) {
         // CSRF Token auto-injection
-        $data['csrf_token'] = Csrf::getToken();
+        $csrf_html = Csrf::getToken();
         
         // Escape data recursively for XSS protection
         $escapedData = self::escape($data);
 
         // Extract variables to local scope
         extract($escapedData);
+        
+        // Ensure csrf_token is available as raw HTML
+        $csrf_token = $csrf_html;
         
         // Provide raw data for special cases (WYSIWYG, etc)
         $_raw = $data;
@@ -22,11 +25,10 @@ class View {
         if (file_exists($viewFile)) {
             require $viewFile;
         } else {
-            // Fallback for absolute paths or different structure if needed
-            // But relying on relative path from root based on standard structure
-            $rootViewFile = CM_Path . '/views/' . $path . '.php'; // CM_Path needs to be defined
-            if (file_exists($rootViewFile)) {
-                require $rootViewFile;
+            // Check in plugins directory
+            $pluginViewFile = CM_PATH . '/' . $path . '.php';
+            if (file_exists($pluginViewFile)) {
+                require $pluginViewFile;
             } else {
                 echo "View file not found: $path";
             }

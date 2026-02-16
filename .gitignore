@@ -64,3 +64,4 @@ yarn-error.log
 # Development and Temporary Files (Root Level Only)
 /.env.example
 /PROJECT_HISTORY.md
+/plugins/

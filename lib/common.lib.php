@@ -302,6 +302,17 @@ function is_ajax_request() {
  * Rate limiting helper (simple session-based)
  * Returns true if action is allowed, false if rate limit exceeded
  */
+/**
+ * Hook System Helpers
+ */
+function add_action($hookName, $callback, $priority = 10) {
+    \App\Core\HookManager::getInstance()->addAction($hookName, $callback, $priority);
+}
+
+function do_action($hookName, ...$params) {
+    \App\Core\HookManager::getInstance()->doAction($hookName, ...$params);
+}
+
 function check_rate_limit($action, $max_attempts = 5, $time_window = 60) {
     $key = 'rate_limit_' . $action;
     
