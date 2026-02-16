@@ -6,8 +6,8 @@
 .env.local
 .env.*.local
 
-# Composer Dependencies
-/vendor/
+# Composer Dependencies (Tracked as requested)
+# /vendor/ (Removed to allow push)
 
 # User Uploaded Files
 /public/data/*
