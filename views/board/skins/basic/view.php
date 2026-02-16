@@ -27,7 +27,7 @@
 
         <!-- Post Content -->
         <div class="post-content post-content-view">
-            <?= $_raw['post']['content'] ?>
+            <?= clean_html($_raw['post']['content']) ?>
 
             <!--//이미지파일 업로드시 출력 시작-->
             <?php if (isset($files) && !empty($files)): ?>

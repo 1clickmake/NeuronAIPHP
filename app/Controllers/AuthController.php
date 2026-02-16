@@ -173,6 +173,26 @@ class AuthController extends BaseController {
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
 
+        // Validation
+        $usernameCheck = $this->validateUsername($username);
+        if ($usernameCheck !== true) {
+            $this->redirect('/mypage?error=' . urlencode($usernameCheck));
+            return;
+        }
+
+        if (!is_valid_email($email)) {
+            $this->redirect('/mypage?error=' . urlencode('Invalid email format'));
+            return;
+        }
+
+        // Check for duplicate username/email (excluding current user)
+        $stmt = $db->prepare("SELECT COUNT(*) FROM users WHERE (username = :username OR email = :email) AND id != :id");
+        $stmt->execute(['username' => $username, 'email' => $email, 'id' => $userId]);
+        if ($stmt->fetchColumn() > 0) {
+             $this->redirect('/mypage?error=' . urlencode('Username or Email already exists'));
+             return;
+        }
+
         if ($password) {
             $hashed = password_hash($password, PASSWORD_BCRYPT);
             $stmt = $db->prepare("UPDATE users SET username = :username, email = :email, password = :password WHERE id = :id");

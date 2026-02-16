@@ -1,20 +1,20 @@
 # Prevent script execution in upload directory
-# Security: Block PHP and other script files from being executed
-
-<FilesMatch "\.(php|php3|php4|php5|phtml|pl|py|jsp|asp|sh|cgi)$">
-    Order Allow,Deny
-    Deny from all
-</FilesMatch>
-
-# Allow only image and document files
-<FilesMatch "\.(jpg|jpeg|png|gif|webp|pdf|doc|docx|xls|xlsx|txt|zip)$">
-    Allow from all
-</FilesMatch>
+# Security: Whitelist approach - Deny everything, Allow only safe extensions
 
 # Disable directory listing
 Options -Indexes
 
-# Prevent access to .htaccess itself
+# Default Deny
+Order Deny,Allow
+Deny from all
+
+# Allow only safe extensions
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|pdf|doc|docx|xls|xlsx|txt|zip|ppt|pptx)$">
+    Order Deny,Allow
+    Allow from all
+</FilesMatch>
+
+# Prevent access to .htaccess
 <Files ~ "^\.ht">
     Order allow,deny
     Deny from all
