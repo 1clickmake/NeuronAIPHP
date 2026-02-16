@@ -31,7 +31,7 @@
 
             <!--//이미지파일 업로드시 출력 시작-->
             <?php if (isset($files) && !empty($files)): ?>
-                <div class="file-list-wrapper">
+                <div style="margin-bottom:1rem;">
                     <?php foreach ($files as $file): ?>
                         <?php 
                         $ext = strtolower(pathinfo($file['filename'], PATHINFO_EXTENSION));

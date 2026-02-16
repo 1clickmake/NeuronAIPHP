@@ -17,7 +17,7 @@ include_header($title, $siteConfig);
         
         <form id="writeForm" action="<?= $_SERVER['REQUEST_URI'] ?>" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom: 1rem;">
                 <label>Title</label>
                 <input type="text" name="title" class="form-control" value="<?= isset($post) ? htmlspecialchars($post['title']) : '' ?>" required placeholder="Enter post title...">
             </div>

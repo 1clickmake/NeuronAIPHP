@@ -34,10 +34,15 @@ if (file_exists($envPath)) {
 
 
 require_once CM_LIB_PATH . '/common.lib.php';
+
+// Extract hostname without port for session cookie domain
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$hostname = explode(':', $host)[0]; // Remove port if present
+
 session_set_cookie_params([
     'lifetime' => 86400,
     'path' => '/',
-    'domain' => $_SERVER['HTTP_HOST'],
+    'domain' => '', // Empty string for localhost compatibility
     'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
     'httponly' => true,
     'samesite' => 'Lax'

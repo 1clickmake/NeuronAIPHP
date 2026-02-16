@@ -32,10 +32,10 @@ include CM_LAYOUT_PATH . '/header.php';
                     <a href="/mypage" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: none;" class="username-link">
                         <i class="fa-solid fa-circle-user"></i> <?= htmlspecialchars($_SESSION['user']['username']) ?>
                     </a>
-                    <a href="/logout" class="btn btn-primary" style="background: #ef4444; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);">Logout</a>
+                    <a href="/logout" class="btn btn-secondary">Logout</a>
                 <?php else: ?>
                     <a href="/login">Login</a>
-                    <a href="/register" class="btn btn-primary">Sign Up</a>
+                    <a href="/register">Sign Up</a>
                 <?php endif; ?>
             </div>
 

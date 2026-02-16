@@ -1,8 +1,8 @@
 /* Basic Template Custom Styles - White Theme */
 :root {
-    --primary: #6366f1;
-    /* Indigo 500 */
-    --primary-glow: rgba(99, 102, 241, 0.3);
+    --primary: #64748b;
+    /* Slate 500 - 밝은 회색 */
+    --primary-glow: rgba(100, 116, 139, 0.3);
     --text-main: #334155;
     /* Slate 700 - Main Text */
     --text-muted: #64748b;
@@ -300,7 +300,9 @@ p {
 .board-item-link div:last-child {
     font-size: 0.7rem;
     color: var(--text-muted);
-}/* ==========================================================================
+}
+
+/* ==========================================================================
    BASIC BOARD SKIN STYLES (Migrated)
    ========================================================================== */
 
@@ -349,10 +351,40 @@ p {
 
 .basic-table {
     margin: 0;
+    text-align: center;
+    width: 100%;
 }
 
 .basic-table-head {
     border-bottom: 2px solid var(--glass-border);
+    background: #64748b !important;
+}
+
+.basic-table-head th {
+    color: white !important;
+    font-weight: 600;
+    padding: 1rem 0.75rem;
+    border-bottom: none !important;
+}
+
+.basic-table-head td {
+    color: white !important;
+    font-weight: 600;
+    padding: 1rem 0.75rem;
+    border-bottom: none !important;
+}
+
+/* Table Body Styles */
+.basic-table tbody {
+    background: #f1f5f9 !important;
+}
+
+.basic-table tbody td {
+    background: #f1f5f9 !important;
+    color: #334155 !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
 /* Column Widths */
@@ -391,7 +423,11 @@ p {
 }
 
 .post-row:hover {
-    background: rgba(125, 125, 125, 0.05);
+    background: rgba(100, 116, 139, 0.15) !important;
+}
+
+.post-row:hover td {
+    background: rgba(100, 116, 139, 0.15) !important;
 }
 
 /* Cell Styles */
@@ -403,6 +439,7 @@ p {
 .cell-title {
     font-weight: 600;
     color: var(--text-main);
+    text-align: left;
 }
 
 .reply-count {
@@ -938,6 +975,7 @@ p {
 .ql-snow .ql-picker-label.ql-active {
     color: var(--primary);
 }
+
 /* ==========================================================================
    BLOG BOARD SKIN STYLES (Migrated)
    ========================================================================== */
@@ -950,6 +988,22 @@ p {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.admin-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-right: 1rem;
+    background: rgba(100, 116, 139, 0.3);
+    padding: 5px 15px;
+    border-radius: 8px;
+}
+
+.admin-label {
+    font-size: 0.85rem;
+    color: #111;
+    cursor: pointer;
 }
 
 .blog-title {
@@ -1161,7 +1215,7 @@ p {
 
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
 }
 
@@ -1195,7 +1249,7 @@ p {
     right: 0;
     bottom: 0;
     background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.7));
-    opacity: 0;
+    opacity: 1;
     transition: opacity 0.3s ease;
     display: flex;
     align-items: flex-end;
@@ -1203,7 +1257,7 @@ p {
 }
 
 .gallery-item:hover .gallery-overlay {
-    opacity: 1;
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.85));
 }
 
 .gallery-stats {
@@ -1222,6 +1276,7 @@ p {
 
 .gallery-info {
     padding: 1.25rem;
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .gallery-info h4 {
@@ -1257,6 +1312,7 @@ p {
         height: 200px;
     }
 }
+
 /* ==========================================================================
    MYPAGE STYLES (Migrated)
    ========================================================================== */
@@ -1441,6 +1497,7 @@ p {
         margin-top: 2rem !important;
     }
 }
+
 /* ==========================================================================
    AUTH PAGES STYLES (Login & Register - Migrated)
    ========================================================================== */
@@ -1637,5 +1694,357 @@ p {
 
     to {
         width: 0%;
+    }
+}
+
+/* Write Form & Editor Styles */
+.write-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0
+}
+
+.write-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.5rem
+}
+
+.write-subtitle {
+    color: var(--text-muted)
+}
+
+.form-group>label {
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    display: block
+}
+
+.form-control {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #cbd5e1;
+    background: #fff !important;
+    color: #334155 !important
+}
+
+.form-control:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.1) !important
+}
+
+.file-input-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem
+}
+
+.file-input-group .form-control {
+    width: auto;
+    flex-grow: 1
+}
+
+.mode-switch-group .btn-check:checked+.btn-mode-label {
+    background-color: var(--primary);
+    color: #fff;
+    border-color: var(--primary)
+}
+
+.btn-mode-label {
+    border: 1px solid #cbd5e1;
+    color: var(--text-main)
+}
+
+/* View Page Styles */
+.post-header-card {
+    padding: 2rem;
+    margin-bottom: 2rem
+}
+
+.post-view-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 1rem
+}
+
+.post-meta-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    color: var(--text-muted)
+}
+
+.post-meta-left {
+    display: flex;
+    gap: 1rem
+}
+
+.post-content-view {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-main);
+    min-height: 200px;
+    margin-bottom: 3rem
+}
+
+.post-content-view img {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 8px;
+    margin: 1rem 0
+}
+
+.attached-files-area {
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 2rem
+}
+
+.attached-label {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-main)
+}
+
+.file-download-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e2e8f0
+}
+
+.file-download-item:last-child {
+    border-bottom: none
+}
+
+.comments-header {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 0.5rem;
+    display: inline-block
+}
+
+.comment-item {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0
+}
+
+.comment-author {
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.2rem
+}
+
+.comment-date {
+    font-size: 0.85rem;
+    color: var(--text-muted)
+}
+
+.sub-comment-item {
+    background: #f8fafc;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 8px;
+    margin-left: 2rem
+}
+
+.file-list-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem
+}
+
+.file-list-wrapper img {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1)
+}
+
+/* ==========================================================================
+   PREMIUM FOOTER STYLES
+   ========================================================================== */
+.premium-footer {
+    padding: 4rem 0 2rem;
+    margin-top: 5rem;
+    border-top: 1px solid var(--glass-border);
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.5fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.footer-brand .footer-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 1.2rem;
+    display: block;
+    text-decoration: none;
+}
+
+.footer-brand .footer-desc {
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-size: 0.95rem;
+    max-width: 400px;
+}
+
+.footer-section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 1.8rem;
+    position: relative;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.8rem;
+}
+
+.footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    display: inline-block;
+}
+
+.footer-links a:hover {
+    color: var(--primary);
+    transform: translateX(5px);
+}
+
+.footer-info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-info-item {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    align-items: flex-start;
+}
+
+.footer-info-item i {
+    color: var(--primary);
+    font-size: 1.1rem;
+    width: 20px;
+}
+
+.company-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+}
+
+.meta-item {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.meta-label {
+    font-weight: 700;
+    color: var(--text-main);
+    opacity: 0.8;
+}
+
+.footer-bottom {
+    padding-top: 2rem;
+    border-top: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.copyright {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.footer-social {
+    display: flex;
+    gap: 1.2rem;
+}
+
+.footer-social a {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.footer-social a:hover {
+    color: var(--primary);
+    transform: translateY(-3px);
+}
+
+@media (max-width: 991px) {
+    .footer-container {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .footer-brand {
+        grid-column: span 2;
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .premium-footer {
+        padding: 3rem 0 2rem;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .footer-brand {
+        grid-column: span 1;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
+    }
+
+    .company-meta {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.5rem;
     }
 }

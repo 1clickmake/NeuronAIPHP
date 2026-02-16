@@ -10,10 +10,10 @@
         <div style="display: flex; gap: 0.5rem; align-items: center;">
             <?php if (isset($_SESSION['user'])): ?>
                 <?php if ($_SESSION['user']['role'] === 'admin'): ?>
-                    <div style="display: flex; align-items: center; gap: 1rem; margin-right: 1rem; background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 8px;">
+                    <div class="admin-controls">
                         <div class="form-check" style="margin-bottom: 0;">
                             <input type="checkbox" id="check-all" class="form-check-input">
-                            <label class="form-check-label" for="check-all" style="font-size: 0.85rem; color: #cbd5e1; cursor: pointer;">Select All</label>
+                            <label class="form-check-label admin-label" for="check-all">Select All</label>
                         </div>
                         <button class="btn btn-sm btn-danger" id="btn-bulk-delete" style="display: none;" onclick="bulkDelete()">Delete Selected</button>
                     </div>

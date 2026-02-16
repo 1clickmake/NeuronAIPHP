@@ -1,5 +1,4 @@
 <?php $title = $board['title']; include_header($title, $siteConfig); ?>
-<style><?php include CM_BOARD_SKINS_PATH . '/basic/style.css'; ?></style>
 
 <div class="container basic-container">
     <div class="basic-list-header">
@@ -21,8 +20,8 @@
 
     <div class="glass-card">
 		<div class="table-responsive">
-			<table class="table table-hover table-striped text-center" style="min-width:1000px;">
-				<thead>
+			<table class=" basic-table" style="min-width:1000px;">
+				<thead class="basic-table-head">
 					<tr>
 						<?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
 							<th style="width: 40px;"><input type="checkbox" id="check-all" class="form-check-input"></th>

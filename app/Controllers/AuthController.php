@@ -11,7 +11,7 @@ class AuthController extends BaseController {
         if (isset($_SESSION['user'])) {
             $this->redirect('/');
         }
-        $this->view('auth/login');
+        $this->view('auth/login', ['csrf_token' => Csrf::getToken()]);
     }
 
     public function login() {
@@ -46,7 +46,7 @@ class AuthController extends BaseController {
     }
 
     public function showRegister() {
-        $this->view('auth/register');
+        $this->view('auth/register', ['csrf_token' => Csrf::getToken()]);
     }
 
     public function register() {

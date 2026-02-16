@@ -135,7 +135,7 @@
             </div>
         </div>
 
-        <!-- Section 5: Company Info -->
+        <!-- Section 5: Company Info  -->
         <h3 class="admin-section-header"><i class="fa-solid fa-building"></i> Company Information</h3>
         <div class="admin-section-container">
             <div class="admin-grid">
