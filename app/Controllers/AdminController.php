@@ -852,6 +852,10 @@ class AdminController extends BaseController {
                     $status,
                     $errorMsg
                 ]);
+                
+                if ($failCount > 0) {
+                    error_log("MAIL BATCH FAILURE: Target: {$targetInfo} | Failed: {$failCount} | Recipients: {$recipientStr}");
+                }
 
              } catch (\Exception $e) {
                  error_log("Mail logging failed: " . $e->getMessage());
@@ -874,35 +878,81 @@ class AdminController extends BaseController {
     public function mailLogs() {
         $db = Database::getInstance();
         
-        // Ensure Schema is updated
+        // Ensure mail_logs table exists
         try {
-            // Check for 'target_info' column
-            $checkInfo = $db->query("SHOW COLUMNS FROM mail_logs LIKE 'target_info'");
-            if ($checkInfo->rowCount() == 0) {
-                // Add target_info
-                $db->exec("ALTER TABLE mail_logs ADD COLUMN target_info VARCHAR(255) NULL AFTER id");
-                // Update recipient to LONGTEXT
-                $db->exec("ALTER TABLE mail_logs MODIFY COLUMN recipient LONGTEXT");
-                // Add attachments
-                $db->exec("ALTER TABLE mail_logs ADD COLUMN attachments TEXT NULL AFTER content");
-            }
+            $db->query("SELECT 1 FROM mail_logs LIMIT 1");
         } catch (\PDOException $e) {
-            // Ignore error if already exists or other issues, just log if necessary
+            $db->exec("CREATE TABLE IF NOT EXISTS `mail_logs` (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
+                `target_info` varchar(255) DEFAULT NULL,
+                `sender_name` varchar(100) DEFAULT NULL,
+                `sender_phone` varchar(50) DEFAULT NULL,
+                `sender_email` varchar(255) DEFAULT NULL,
+                `recipient` longtext NOT NULL,
+                `subject` varchar(255) NOT NULL,
+                `content` longtext NOT NULL,
+                `attachments` text DEFAULT NULL,
+                `status` varchar(20) NOT NULL DEFAULT 'success',
+                `error_message` text DEFAULT NULL,
+                `sent_at` timestamp NOT NULL DEFAULT current_timestamp(),
+                PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
         }
-        
+
+        // Check for specific columns if table exists but might be old
+        try {
+            $checkCols = $db->query("SHOW COLUMNS FROM mail_logs")->fetchAll(PDO::FETCH_COLUMN);
+            if (!in_array('sender_name', $checkCols)) {
+                $db->exec("ALTER TABLE mail_logs 
+                           ADD COLUMN sender_name VARCHAR(100) DEFAULT NULL AFTER target_info, 
+                           ADD COLUMN sender_phone VARCHAR(50) DEFAULT NULL AFTER sender_name, 
+                           ADD COLUMN sender_email VARCHAR(255) DEFAULT NULL AFTER sender_phone");
+            }
+            if (!in_array('target_info', $checkCols)) {
+                $db->exec("ALTER TABLE mail_logs ADD COLUMN target_info VARCHAR(255) DEFAULT NULL AFTER id");
+            }
+        } catch (\PDOException $e) { /* Ignore */ }
+
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $filter = isset($_GET['filter']) ? $_GET['filter'] : '';
         $limit = 20;
         $offset = ($page - 1) * $limit;
 
-        $totalItems = $db->query("SELECT COUNT(*) FROM mail_logs")->fetchAll(PDO::FETCH_COLUMN)[0];
+        $where = " WHERE 1 ";
+        $params = [];
+
+        if ($filter) {
+            if ($filter === 'contact') {
+                $where .= " AND target_info = 'contact' ";
+            } elseif ($filter === 'direct') {
+                $where .= " AND target_info = 'Direct Emails' ";
+            } elseif ($filter === 'all') {
+                $where .= " AND target_info = 'All Members' ";
+            } elseif ($filter === 'level') {
+                $where .= " AND target_info LIKE 'Level %' ";
+            } elseif ($filter === 'ids') {
+                $where .= " AND target_info LIKE 'Member IDs: %' ";
+            }
+        }
+
+        $stmt = $db->prepare("SELECT COUNT(*) FROM mail_logs" . $where);
+        $stmt->execute($params);
+        $totalItems = $stmt->fetchColumn();
         $totalPages = ceil($totalItems / $limit);
 
-        $logs = $db->query("SELECT * FROM mail_logs ORDER BY sent_at DESC LIMIT $limit OFFSET $offset")->fetchAll();
+        $stmt = $db->prepare("SELECT * FROM mail_logs" . $where . " ORDER BY sent_at DESC LIMIT :limit OFFSET :offset");
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $logs = $stmt->fetchAll();
 
         $this->view('admin/mail_logs', [
             'logs' => $logs,
             'page' => $page,
-            'totalPages' => $totalPages
+            'totalPages' => $totalPages,
+            'totalItems' => $totalItems,
+            'limit' => $limit,
+            'currentFilter' => $filter
         ]);
     }
 
@@ -921,5 +971,25 @@ class AdminController extends BaseController {
             }
         }
         closedir($dir);
+    }
+
+    public function bulkDeleteMailLogs() {
+        if (!\App\Core\Csrf::verify($_POST['csrf_token'] ?? '')) die("CSRF validation failed");
+
+        $ids = $_POST['ids'] ?? [];
+        $filter = $_POST['filter'] ?? '';
+        $page = $_POST['page'] ?? 1;
+
+        if (!empty($ids) && is_array($ids)) {
+            $db = Database::getInstance();
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+            $stmt = $db->prepare("DELETE FROM mail_logs WHERE id IN ($placeholders)");
+            $stmt->execute($ids);
+        }
+
+        $redirectUrl = '/admin/mail/logs?page=' . $page;
+        if ($filter) $redirectUrl .= '&filter=' . urlencode($filter);
+        
+        $this->redirect($redirectUrl);
     }
 }

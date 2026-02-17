@@ -12,6 +12,8 @@
     <script src="https://code.jquery.com/jquery-4.0.0-beta.min.js"></script>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/latest.css" rel="stylesheet"> <!-- 최신글 위젯 스타일 -->
+    <link href="/css/formmail.css" rel="stylesheet"> <!-- 폼메일 위젯 스타일 -->
 
 	<!-- 템플릿 전용 CSS 동적 로드 -->
     <?= load_template_assets($siteConfig ?? []) ?>

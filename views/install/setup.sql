@@ -189,4 +189,21 @@ CREATE TABLE IF NOT EXISTS `point_log` (
     INDEX `idx_user_id` (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT '포인트 이력 테이블';
 
+-- 메일 발송 로그 테이블
+DROP TABLE IF EXISTS `mail_logs`;
+CREATE TABLE IF NOT EXISTS `mail_logs` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '고유 ID',
+    `target_info` VARCHAR(255) DEFAULT NULL COMMENT '수신 대상 정보',
+    `sender_name` VARCHAR(100) DEFAULT NULL COMMENT '발송자 이름',
+    `sender_phone` VARCHAR(50) DEFAULT NULL COMMENT '발송자 연락처',
+    `sender_email` VARCHAR(255) DEFAULT NULL COMMENT '발송자 이메일',
+    `recipient` LONGTEXT NOT NULL COMMENT '수신 이메일 목록',
+    `subject` VARCHAR(255) NOT NULL COMMENT '메일 제목',
+    `content` LONGTEXT NOT NULL COMMENT '메일 본문',
+    `attachments` TEXT DEFAULT NULL COMMENT '첨부 파일 목록',
+    `status` VARCHAR(20) NOT NULL DEFAULT 'success' COMMENT '발송 상태',
+    `error_message` TEXT DEFAULT NULL COMMENT '에러 메시지',
+    `sent_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '발송 일시'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT '메일 발송 로그 테이블';
+
 SET FOREIGN_KEY_CHECKS = 1;

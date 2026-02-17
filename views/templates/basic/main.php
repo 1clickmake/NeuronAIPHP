@@ -50,4 +50,40 @@
     </div>
 </div>
 
+<!-- 최신글 리스트 섹션 (공지사항 & 자유게시판) -->
+<div class="container" style="margin-top: 3rem; margin-bottom: 4rem;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2.5rem;">
+        <div>
+            <?php 
+                $board_slug = 'free'; 
+                $limit = 5;
+                include CM_VIEWS_PATH . '/partials/latest_posts.php'; 
+            ?>
+        </div>
+    </div>
+</div>
+
+<!-- 최신 갤러리 섹션 -->
+<div class="container" style="margin-bottom: 4rem;">
+    <?php 
+        $board_slug = 'gallery'; 
+        $limit = 4;
+        include CM_VIEWS_PATH . '/partials/latest_gallery.php'; 
+    ?>
+</div>
+
+<!-- 최신 블로그 섹션 -->
+<div class="container" style="margin-bottom: 5rem;">
+    <?php 
+        $board_slug = 'blog'; 
+        $limit = 3;
+        include CM_VIEWS_PATH . '/partials/latest_blog.php'; 
+    ?>
+</div>
+
+<!-- 폼메일 섹션 -->
+<div class="container">
+    <?php include CM_VIEWS_PATH . '/partials/formmail.php'; ?>
+</div>
+
 <?php include_footer($siteConfig); ?>

@@ -13,9 +13,9 @@ class View {
         // Extract variables to local scope
         extract($escapedData);
         
-        // Ensure csrf_token is available as raw HTML
+        // Ensure $csrf_token and global $csrf_token are available as raw HTML
         global $csrf_token;
-        $csrf_token = $csrf_html;
+        $csrf_token = $csrf_html; // This updates both the global and the local variable in this scope
         
         // Provide raw data for special cases (WYSIWYG, etc)
         $_raw = $data;

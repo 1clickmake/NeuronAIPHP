@@ -112,12 +112,14 @@ if (file_exists($envPath) && !str_starts_with($internalUri, '/install')) {
     }
 }
 
-$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
+$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($envPath, $internalUri) {
     $routes = require __DIR__ . '/../app/routes.php';
     $routes($r);
 
-    // Register Plugin Routes
-    \App\Core\PluginManager::getInstance()->registerRoutes($r);
+    // Register Plugin Routes if installed
+    if (file_exists($envPath) && !str_starts_with($internalUri, '/install')) {
+        \App\Core\PluginManager::getInstance()->registerRoutes($r);
+    }
 });
 
 // Fetch method and URI

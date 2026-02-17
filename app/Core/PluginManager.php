@@ -87,6 +87,9 @@ class PluginManager
     }
 
     private function checkInstallation($id) {
+        $db = Database::getInstance();
+        if (!$db) return; // Skip if database is not ready
+
         $schemaFile = $this->plugins[$id]['path'] . '/Schema.php';
         if (file_exists($schemaFile)) {
             require_once $schemaFile;

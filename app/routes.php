@@ -45,6 +45,7 @@ return function(FastRoute\RouteCollector $r) {
     $r->addRoute('POST', '/admin/mail/send', ['App\Controllers\AdminController', 'sendMail']);
     $r->addRoute('GET', '/admin/mail/logs', ['App\Controllers\AdminController', 'mailLogs']);
     $r->addRoute('POST', '/admin/mail/config', ['App\Controllers\AdminController', 'saveMailConfig']);
+    $r->addRoute('POST', '/admin/mail/bulk-delete', ['App\Controllers\AdminController', 'bulkDeleteMailLogs']);
 
     // Page Manager Routes
     $r->addRoute('GET', '/admin/pages', ['App\Controllers\AdminController', 'pages']);
@@ -76,4 +77,5 @@ return function(FastRoute\RouteCollector $r) {
 
     // Frontend Routes
     $r->addRoute('GET', '/', ['App\Controllers\HomeController', 'index']);
+    $r->addRoute('POST', '/contact/send', ['App\Controllers\HomeController', 'sendContact']);
 };

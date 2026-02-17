@@ -370,3 +370,24 @@ function check_rate_limit($action, $max_attempts = 5, $time_window = 60) {
     $_SESSION[$key]['count']++;
     return true;
 }
+
+/**
+ * Get thumbnail from post data or content
+ */
+function get_thumbnail($post, $default = null) {
+    if (!$post) return $default;
+    
+    // 1. Check for attached file (first_file)
+    $thumbnail = $post['first_file'] ?? null;
+    
+    // 2. If no attachment, extract from content
+    if (!$thumbnail && !empty($post['content'])) {
+        $content = htmlspecialchars_decode($post['content']);
+        preg_match('/<img[^>]+src="([^">]+)"/i', $content, $matches);
+        if (!empty($matches[1])) {
+            $thumbnail = $matches[1];
+        }
+    }
+    
+    return $thumbnail ?: $default;
+}

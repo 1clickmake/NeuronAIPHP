@@ -3,15 +3,36 @@
 <div class="admin-header-flex">
     <div>
         <h1 style="margin: 0;">Mail Logs</h1>
-        <p class="text-muted-small" style="margin: 0;">History of sent emails.</p>
+        <p class="text-muted-small" style="margin: 0; margin-bottom: 1.5rem;">History of sent emails.</p>
+        
+        <div class="filter-badges mt-3">
+            <a href="/admin/mail/logs" class="btn btn-sm <?= empty($currentFilter) ? 'btn-primary' : 'btn-outline-secondary' ?>">All Logs</a>
+            <a href="/admin/mail/logs?filter=contact" class="btn btn-sm <?= ($currentFilter === 'contact') ? 'btn-primary' : 'btn-outline-secondary' ?>">Contact</a>
+            <a href="/admin/mail/logs?filter=direct" class="btn btn-sm <?= ($currentFilter === 'direct') ? 'btn-primary' : 'btn-outline-secondary' ?>">Direct Emails</a>
+            <a href="/admin/mail/logs?filter=all" class="btn btn-sm <?= ($currentFilter === 'all') ? 'btn-primary' : 'btn-outline-secondary' ?>">All Members</a>
+            <a href="/admin/mail/logs?filter=level" class="btn btn-sm <?= ($currentFilter === 'level') ? 'btn-primary' : 'btn-outline-secondary' ?>">By Level</a>
+            <a href="/admin/mail/logs?filter=ids" class="btn btn-sm <?= ($currentFilter === 'ids') ? 'btn-primary' : 'btn-outline-secondary' ?>">Member IDs</a>
+        </div>
     </div>
+
     <a href="/admin/mail" class="btn btn-secondary">
         <i class="fa-solid fa-paper-plane"></i> Send Mail
     </a>
 </div>
 
 <div class="glass-card">
-    <div class="table-responsive">
+    <form id="mail-logs-form" action="/admin/mail/bulk-delete" method="POST">
+        <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
+        <input type="hidden" name="filter" value="<?= htmlspecialchars($currentFilter) ?>">
+        <input type="hidden" name="page" value="<?= $page ?>">
+
+        <div style="margin-bottom: 1rem;">
+            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete selected logs?')">
+                <i class="fa-solid fa-trash-can"></i> Bulk Delete
+            </button>
+        </div>
+
+        <div class="table-responsive">
         <style>
             .log-subject {
                 cursor: pointer;
@@ -27,7 +48,10 @@
         <table class="table table-dark table-hover table-striped text-center">
             <thead>
                 <tr>
-                    <th style="width: 50px;">ID</th>
+                    <th style="width: 40px;">
+                        <input type="checkbox" id="check-all" class="form-check-input">
+                    </th>
+                    <th style="width: 50px;">No.</th>
                     <th style="width: 150px;">Target</th>
                     <th>Subject</th>
                     <th style="width: 100px;">Status</th>
@@ -38,21 +62,28 @@
             <tbody>
                 <?php if (empty($logs)): ?>
                     <tr>
-                        <td colspan="6" class="text-center">No logs found.</td>
+                        <td colspan="7" class="text-center">No logs found.</td>
                     </tr>
                 <?php else: ?>
-                    <?php foreach ($logs as $log): ?>
+                    <?php foreach ($logs as $index => $log): ?>
                         <tr>
-                            <td><?= $log['id'] ?></td>
+                            <td>
+                                <input type="checkbox" name="ids[]" value="<?= $log['id'] ?>" class="form-check-input log-checkbox">
+                            </td>
+                            <td><?= $totalItems - ($page - 1) * $limit - $index ?></td>
                             <td>
                                 <!-- Display target_info if available, else fallback to recipient (truncated) -->
                                 <?php 
-                                    $target = $log['target_info'] ?? $log['recipient'];
-                                    // if it's a long list of emails and no target_info, truncate
-                                    if (empty($log['target_info']) && strlen($target) > 20) {
-                                        $target = mb_substr($target, 0, 20) . '...';
+                                    if (($log['target_info'] ?? '') === 'contact') {
+                                        echo '<span class="badge" style="background: #a855f7; color: white;">Contact</span>';
+                                    } else {
+                                        $target = $log['target_info'] ?? $log['recipient'];
+                                        // if it's a long list of emails and no target_info, truncate
+                                        if (empty($log['target_info']) && strlen($target) > 20) {
+                                            $target = mb_substr($target, 0, 20) . '...';
+                                        }
+                                        echo htmlspecialchars($target);
                                     }
-                                    echo htmlspecialchars($target);
                                 ?>
                             </td>
                             <td class="text-start">
@@ -77,9 +108,13 @@
             </tbody>
         </table>
     </div>
+    </form>
 
     <!-- Pagination -->
-    <?= get_pagination($page, $totalPages) ?>
+    <?php 
+        $paginationSearch = $currentFilter ? '&filter=' . urlencode($currentFilter) : '';
+        echo get_pagination($page, $totalPages, $paginationSearch); 
+    ?>
 </div>
 
 <!-- Mail Detail Modal -->
@@ -95,9 +130,26 @@
             <div id="detail-subject" class="fw-bold fs-5 p-2 bg-dark-soft rounded"></div>
         </div>
 
-        <div class="detail-group mb-4">
+        <div class="detail-group mb-4" id="group-recipients">
             <label class="text-muted-small d-block mb-1">Recipients</label>
             <div id="detail-recipients" class="mail-recipients-box"></div>
+        </div>
+
+        <div id="contact-info-section" style="display:none; border: 1px dashed rgba(255,255,255,0.2); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; background: rgba(168, 85, 247, 0.05);">
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="text-muted-small d-block">Sender Name</label>
+                    <div id="detail-sender-name" class="fw-bold"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="text-muted-small d-block">Sender Email</label>
+                    <div id="detail-sender-email" class="fw-bold"></div>
+                </div>
+                <div class="col-md-4">
+                    <label class="text-muted-small d-block">Phone Number</label>
+                    <div id="detail-sender-phone" class="fw-bold"></div>
+                </div>
+            </div>
         </div>
 
         <div class="detail-group mb-4">
@@ -111,13 +163,25 @@
         </div>
 
         <div class="text-end mt-4">
-            <button onclick="$('#mailDetailModal').fadeOut()" class="btn btn-secondary px-4">Close Settings</button>
+            <button onclick="$('#mailDetailModal').fadeOut()" class="btn btn-secondary px-4">Close</button>
         </div>
     </div>
 </div>
 
 <script>
     $('#link-mail-logs').addClass('active');
+
+    // Check All functionality
+    $('#check-all').on('change', function() {
+        $('.log-checkbox').prop('checked', $(this).is(':checked'));
+    });
+
+    // If any checkbox is unchecked, uncheck the master
+    $('.log-checkbox').on('change', function() {
+        if (!$(this).is(':checked')) {
+            $('#check-all').prop('checked', false);
+        }
+    });
 
     function openLogDetail(log) {
         $('#detail-subject').text(log.subject);
@@ -141,6 +205,18 @@
             content = decodeEntity(content);
         }
         $('#detail-content').html(content); 
+        
+        // Handle contact info
+        if (log.target_info === 'contact') {
+            $('#contact-info-section').show();
+            $('#detail-sender-name').text(log.sender_name || '-');
+            $('#detail-sender-email').text(log.sender_email || '-');
+            $('#detail-sender-phone').text(log.sender_phone || '-');
+            $('#group-recipients').hide(); // Admin knows who they are
+        } else {
+            $('#contact-info-section').hide();
+            $('#group-recipients').show();
+        }
         
         // Attachments: split by comma and show line by line with icons
         if (log.attachments && log.attachments.trim() !== '') {
