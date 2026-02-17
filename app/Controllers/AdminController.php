@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Core\Database;
 use PDO;
+use Mailer;
+require_once __DIR__ . '/../../lib/mailer.lib.php';
 
 class AdminController extends BaseController {
     public function __construct() {
@@ -299,6 +301,21 @@ class AdminController extends BaseController {
             } else {
                 $stmt = $db->prepare("UPDATE users SET user_id = :user_id, username = :username, email = :email, role = :role, country = :country, point = :point, level = :level WHERE id = :id");
                 $stmt->execute(['user_id' => $userid, 'username' => $username, 'email' => $email, 'role' => $role, 'country' => $country, 'point' => $point, 'level' => $level, 'id' => $id]);
+            }
+
+            // If the updated user is the currently logged-in user, refresh session
+            $isSameUser = false;
+            if (isset($_SESSION['user']['id']) && $_SESSION['user']['id'] == $id) $isSameUser = true;
+            if (isset($_SESSION['user']['user_id']) && $_SESSION['user']['user_id'] == $userid) $isSameUser = true;
+
+            if ($isSameUser) {
+                $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
+                $stmt->execute([$id]);
+                $freshUser = $stmt->fetch();
+                if ($freshUser) {
+                    $_SESSION['user'] = $freshUser;
+                    error_log("Session updated for user: " . $freshUser['username']);
+                }
             }
         }
         $this->redirect('/admin/users');
@@ -650,21 +667,243 @@ class AdminController extends BaseController {
             die("Invalid template name.");
         }
 
-        // 1. Create Views Folder and Copy from 'basic'
+        // 1. Create Views Folder and Copy from 'basic' (Updated logic to copy folder)
         $sourceViewPath = CM_VIEWS_PATH . '/templates/basic';
         $targetViewPath = CM_VIEWS_PATH . '/templates/' . $name;
-        if (!is_dir($targetViewPath) && is_dir($sourceViewPath)) {
+        
+        // Ensure source exists
+        if (!is_dir($sourceViewPath)) {
+             die("Source template 'basic' not found.");
+        }
+
+        if (!is_dir($targetViewPath)) {
             $this->recursiveCopy($sourceViewPath, $targetViewPath);
         }
 
         // 2. Create Public Assets Folder and Copy from 'basic'
-        $sourceAssetPath = CM_ASSET_PATH . '/templates/basic';
-        $targetAssetPath = CM_ASSET_PATH . '/templates/' . $name;
-        if (!is_dir($targetAssetPath) && is_dir($sourceAssetPath)) {
+        // Note: Assets might be in public/assets/templates/basic
+        // Assuming CM_ASSET_PATH points to public/assets
+        $sourceAssetPath = CM_PUBLIC_PATH . '/assets/templates/basic';
+        $targetAssetPath = CM_PUBLIC_PATH . '/assets/templates/' . $name;
+        
+        if (is_dir($sourceAssetPath) && !is_dir($targetAssetPath)) {
             $this->recursiveCopy($sourceAssetPath, $targetAssetPath);
         }
 
         $this->redirect('/admin/config?msg=Template created successfully');
+    }
+
+    // --- Mail Methods ---
+    public function mailForm() {
+        $db = Database::getInstance();
+        // Use a fixed range for levels (1-10)
+        $levels = range(1, 10);
+        
+        $smtpConfigured = !empty($_ENV['SMTP_HOST']) && !empty($_ENV['SMTP_USER']) && !empty($_ENV['SMTP_PASS']);
+
+        $this->view('admin/mail_form', [
+            'levels' => $levels,
+            'smtpConfigured' => $smtpConfigured,
+            'smtpConfig' => [
+                'host' => $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com',
+                'port' => $_ENV['SMTP_PORT'] ?? '465',
+                'user' => $_ENV['SMTP_USER'] ?? '',
+                'pass' => $_ENV['SMTP_PASS'] ?? '', // Usually hidden
+                'from_name' => $_ENV['SMTP_FROM_NAME'] ?? 'Neuron AI Admin'
+            ]
+        ]);
+    }
+
+    public function saveMailConfig() {
+        if (!\App\Core\Csrf::verify($_POST['csrf_token'] ?? '')) die("CSRF validation failed");
+
+        $host = $_POST['smtp_host'] ?? 'smtp.gmail.com';
+        $port = $_POST['smtp_port'] ?? '465';
+        $user = $_POST['smtp_user'] ?? '';
+        $pass = $_POST['smtp_pass'] ?? '';
+        $fromName = $_POST['smtp_from_name'] ?? 'Neuron AI Admin';
+
+        // Update .env file
+        $envPath = __DIR__ . '/../../.env';
+        if (file_exists($envPath)) {
+            $envContent = file_get_contents($envPath);
+            
+            $settings = [
+                'SMTP_HOST' => $host,
+                'SMTP_PORT' => $port,
+                'SMTP_USER' => $user,
+                'SMTP_PASS' => $pass,
+                'SMTP_FROM_NAME' => $fromName
+            ];
+
+            foreach ($settings as $key => $value) {
+                // If key exists, replace it
+                if (preg_match("/^$key=.*/m", $envContent)) {
+                    $envContent = preg_replace("/^$key=.*/m", "$key=\"$value\"", $envContent);
+                } else {
+                    // If key doesn't exist, append it
+                    $envContent .= "\n$key=\"$value\"";
+                }
+            }
+
+            file_put_contents($envPath, $envContent);
+        }
+
+        $this->redirect('/admin/mail?msg=SMTP+Settings+Saved');
+    }
+
+    public function sendMail() {
+        if (!\App\Core\Csrf::verify($_POST['csrf_token'] ?? '')) die("CSRF validation failed");
+
+        $targetType = $_POST['target_type'] ?? 'all';
+        $targetLevel = $_POST['target_level'] ?? 1;
+        $targetIds = $_POST['target_ids'] ?? '';
+        $targetEmails = $_POST['target_emails'] ?? '';
+        $subject = $_POST['subject'] ?? '';
+        $content = $_POST['content'] ?? '';
+
+        if (!$subject || !$content) {
+            die("Subject and Content are required.");
+        }
+
+        // Handle Attachments
+        $attachments = [];
+        $attachmentNames = []; // For logging
+        if (isset($_FILES['attachments'])) {
+            $files = $_FILES['attachments'];
+            for ($i = 0; $i < count($files['name']); $i++) {
+                if ($files['error'][$i] === UPLOAD_ERR_OK) {
+                    $tmpDir = sys_get_temp_dir() . '/mail_attachments/';
+                    if (!is_dir($tmpDir)) mkdir($tmpDir, 0777, true);
+                    
+                    $cleanName = basename($files['name'][$i]);
+                    $targetPath = $tmpDir . uniqid() . '_' . $cleanName;
+                    
+                    if (move_uploaded_file($files['tmp_name'][$i], $targetPath)) {
+                        $attachments[] = [$targetPath, $cleanName]; // Pass array [path, name]
+                        $attachmentNames[] = $cleanName;
+                    }
+                }
+            }
+        }
+
+        $recipients = [];
+        $targetInfo = '';
+        $db = Database::getInstance();
+
+        if ($targetType === 'all') {
+            $users = $db->query("SELECT email FROM users WHERE email != ''")->fetchAll(PDO::FETCH_COLUMN);
+            $recipients = $users;
+            $targetInfo = 'All Members';
+        } elseif ($targetType === 'level') {
+            $stmt = $db->prepare("SELECT email FROM users WHERE level = ? AND email != ''");
+            $stmt->execute([$targetLevel]);
+            $recipients = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            $targetInfo = 'Level ' . $targetLevel;
+        } elseif ($targetType === 'select') {
+            $ids = array_map('trim', explode(',', $targetIds));
+            $ids = array_filter($ids);
+            if (!empty($ids)) {
+                $placeholders = implode(',', array_fill(0, count($ids), '?'));
+                $stmt = $db->prepare("SELECT email FROM users WHERE user_id IN ($placeholders) AND email != ''");
+                $stmt->execute($ids);
+                $recipients = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            }
+            $targetInfo = 'Member IDs: ' . implode(', ', $ids);
+        } elseif ($targetType === 'email') {
+            $emails = array_map('trim', explode(',', $targetEmails));
+            $recipients = array_filter($emails, function($email) {
+                return filter_var($email, FILTER_VALIDATE_EMAIL);
+            });
+            $targetInfo = 'Direct Emails'; // Or display first few?
+        }
+
+        if (!empty($recipients)) {
+             $successCount = 0;
+             $failCount = 0;
+             $db = Database::getInstance();
+             
+             // Send individually (privacy safe)
+             foreach ($recipients as $email) {
+                 $result = Mailer::send($email, $subject, $content, $attachments, false); // false = do not log individually
+                 if ($result['success']) $successCount++;
+                 else $failCount++;
+             }
+             
+             // Log ONCE
+             try {
+                // We need to implement manual logging here since we disabled auto-logging in Mailer::send
+                // Or I can update Mailer to have a logBatch method, or just straight INSERT here.
+                // Let's do straight INSERT here for clarity since DB schema changed.
+                
+                // Recipients string
+                $recipientStr = implode(', ', $recipients);
+                $attachStr = implode(', ', $attachmentNames);
+                $status = ($failCount === 0) ? 'success' : ($successCount === 0 ? 'fail' : 'partial');
+                $errorMsg = ($failCount > 0) ? "$failCount failed" : null;
+
+                $stmt = $db->prepare("INSERT INTO mail_logs (target_info, recipient, subject, content, attachments, status, error_message) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([
+                    $targetInfo,
+                    $recipientStr,
+                    $subject,
+                    $content,
+                    $attachStr,
+                    $status,
+                    $errorMsg
+                ]);
+
+             } catch (\Exception $e) {
+                 error_log("Mail logging failed: " . $e->getMessage());
+             }
+             
+             // Cleanup Attachments
+             foreach ($attachments as $att) {
+                 if (is_array($att)) @unlink($att[0]);
+             }
+             if (isset($tmpDir) && is_dir($tmpDir)) @rmdir($tmpDir);
+
+             $msg = "Sent: $successCount, Failed: $failCount";
+        } else {
+             $msg = "No recipients found.";
+        }
+
+        $this->redirect('/admin/mail?msg=' . urlencode($msg));
+    }
+
+    public function mailLogs() {
+        $db = Database::getInstance();
+        
+        // Ensure Schema is updated
+        try {
+            // Check for 'target_info' column
+            $checkInfo = $db->query("SHOW COLUMNS FROM mail_logs LIKE 'target_info'");
+            if ($checkInfo->rowCount() == 0) {
+                // Add target_info
+                $db->exec("ALTER TABLE mail_logs ADD COLUMN target_info VARCHAR(255) NULL AFTER id");
+                // Update recipient to LONGTEXT
+                $db->exec("ALTER TABLE mail_logs MODIFY COLUMN recipient LONGTEXT");
+                // Add attachments
+                $db->exec("ALTER TABLE mail_logs ADD COLUMN attachments TEXT NULL AFTER content");
+            }
+        } catch (\PDOException $e) {
+            // Ignore error if already exists or other issues, just log if necessary
+        }
+        
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $limit = 20;
+        $offset = ($page - 1) * $limit;
+
+        $totalItems = $db->query("SELECT COUNT(*) FROM mail_logs")->fetchAll(PDO::FETCH_COLUMN)[0];
+        $totalPages = ceil($totalItems / $limit);
+
+        $logs = $db->query("SELECT * FROM mail_logs ORDER BY sent_at DESC LIMIT $limit OFFSET $offset")->fetchAll();
+
+        $this->view('admin/mail_logs', [
+            'logs' => $logs,
+            'page' => $page,
+            'totalPages' => $totalPages
+        ]);
     }
 
     private function recursiveCopy($src, $dst) {

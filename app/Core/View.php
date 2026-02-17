@@ -14,6 +14,7 @@ class View {
         extract($escapedData);
         
         // Ensure csrf_token is available as raw HTML
+        global $csrf_token;
         $csrf_token = $csrf_html;
         
         // Provide raw data for special cases (WYSIWYG, etc)

@@ -14,7 +14,7 @@
                 </div>
                 <div class="post-actions">
                     <a href="/board/<?= $post['board_slug'] ?>" class="btn btn-list">📋 List</a>
-                    <?php if (isset($_SESSION['user']) && ($_SESSION['user']['id'] == $post['user_id'] || $_SESSION['user']['role'] == 'admin')): ?>
+                    <?php if ($is_member && ($user['id'] == $post['user_id'] || $is_admin)): ?>
                         <a href="/board/edit/<?= $post['id'] ?>" class="btn btn-edit">✏️ Edit</a>
                         <form action="/board/delete/<?= $post['id'] ?>" method="POST" onsubmit="return confirm('Delete this post?')" class="delete-form">
                             <input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
@@ -66,7 +66,7 @@
         <h3 class="comments-header">💬 Comments</h3>
         
         <!-- Comment Write Form -->
-        <?php if (isset($_SESSION['user'])): ?>
+        <?php if ($is_member): ?>
         <div class="comment-write-box">
             <textarea id="comment-input" class="form-control comment-textarea" rows="3" placeholder="Write a comment..."></textarea>
             <button onclick="addComment()" class="btn btn-primary">Add Comment</button>
@@ -90,10 +90,10 @@
                             <div class="comment-date"><?= date('Y-m-d H:i', strtotime($comment['created_at'])) ?></div>
                         </div>
                         <div class="comment-actions">
-                            <?php if (isset($_SESSION['user']) && count($comment['sub_comments']) < 3): ?>
+                            <?php if ($is_member && count($comment['sub_comments']) < 3): ?>
                                 <button onclick="showReplyBox(<?= $comment['id'] ?>)" class="btn-reply-action">↩️ Reply</button>
                             <?php endif; ?>
-                            <?php if (isset($_SESSION['user']) && ($_SESSION['user']['id'] == $comment['user_id'] || $_SESSION['user']['role'] == 'admin')): ?>
+                            <?php if ($is_member && ($user['id'] == $comment['user_id'] || $is_admin)): ?>
                                 <button onclick="deleteComment(<?= $comment['id'] ?>)" class="btn-delete-action">🗑️</button>
                             <?php endif; ?>
                         </div>
@@ -119,7 +119,7 @@
                                         <span class="sub-comment-author"><?= htmlspecialchars($sub['username']) ?></span>
                                         <span class="sub-comment-date"><?= date('Y-m-d H:i', strtotime($sub['created_at'])) ?></span>
                                     </div>
-                                    <?php if (isset($_SESSION['user']) && ($_SESSION['user']['id'] == $sub['user_id'] || $_SESSION['user']['role'] == 'admin')): ?>
+                                    <?php if ($is_member && ($user['id'] == $sub['user_id'] || $is_admin)): ?>
                                         <button onclick="deleteComment(<?= $sub['id'] ?>)" class="btn-delete-sub">🗑️</button>
                                     <?php endif; ?>
                                 </div>

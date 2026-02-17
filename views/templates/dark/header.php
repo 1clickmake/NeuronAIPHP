@@ -4,7 +4,7 @@ include CM_LAYOUT_PATH . '/header.php';
     <nav class="navbar">
         <!-- Mobile Left: Login Icons -->
         <div class="mobile-user-actions">
-            <?php if (isset($_SESSION['user'])): ?>
+            <?php if ($is_member): ?>
                 <a href="/mypage" title="My Page"><i class="fa-regular fa-user"></i></a>
             <?php else: ?>
                 <a href="/login" title="Login"><i class="fa-regular fa-user"></i></a>
@@ -25,12 +25,12 @@ include CM_LAYOUT_PATH . '/header.php';
         <div class="navbar-actions">
             <!-- PC Nav Links -->
             <div class="nav-links">
-                <?php if (isset($_SESSION['user'])): ?>
-                    <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+                <?php if ($is_member): ?>
+                    <?php if ($is_admin): ?>
                         <a href="/admin"><i class="fa-solid fa-gauge-high"></i> Admin Panel</a>
                     <?php endif; ?>
                     <a href="/mypage" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: none;" class="username-link">
-                        <i class="fa-solid fa-circle-user"></i> <?= htmlspecialchars($_SESSION['user']['username']) ?>
+                        <i class="fa-solid fa-circle-user"></i> <?= htmlspecialchars($user['username']) ?>
                     </a>
                     <a href="/logout" class="btn btn-primary" style="background: #ef4444; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);">Logout</a>
                 <?php else: ?>
@@ -56,21 +56,21 @@ include CM_LAYOUT_PATH . '/header.php';
             <div class="d-flex flex-column">
                 
                 <!-- User Profile / Auth Links -->
-                <?php if (isset($_SESSION['user'])): ?>
+                <?php if ($is_member): ?>
                     <div style="background: rgba(255,255,255,0.05); padding: 1.25rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: center; border: 1px solid rgba(255,255,255,0.1);">
                         <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 1rem;">
                             <i class="fa-solid fa-circle-user" style="font-size: 2rem; color: var(--text-muted);"></i>
                             <div style="text-align: left;">
                                 <div style="font-size: 1rem; font-weight: 600; color: white;">
-                                    <?= htmlspecialchars($_SESSION['user']['username']) ?>
+                                    <?= htmlspecialchars($user['username']) ?>
                                 </div>
                                 <div style="font-size: 0.75rem; color: var(--text-muted);">
-                                    <?= $_SESSION['user']['role'] === 'admin' ? 'Administrator' : 'Member' ?>
+                                    <?= $is_super ? 'Super Admin' : ($is_admin ? 'Administrator' : 'Member') ?>
                                 </div>
                             </div>
                         </div>
                         <div style="display: flex; gap: 0.5rem;">
-                            <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+                            <?php if ($is_admin): ?>
                                 <a href="/admin" class="btn btn-sm btn-primary w-100">Admin</a>
                             <?php endif; ?>
                             <a href="/mypage" class="btn btn-sm w-100" style="background: #a855f7; color: white; border: none;">My Page</a>

@@ -126,6 +126,7 @@ function load_template_scripts($config = []) {
 
 // Helper for including Header/Footer based on template
 function include_header($title = '', $siteConfig = []) {
+    global $is_member, $is_guest, $is_super, $is_admin, $user, $csrf_token;
     $template = $siteConfig['template'] ?? 'basic';
     $headerPath = CM_TEMPLATE_PATH . '/' . $template . '/header.php';
     if (!file_exists($headerPath)) {
@@ -135,6 +136,7 @@ function include_header($title = '', $siteConfig = []) {
 }
 
 function include_footer($siteConfig = []) {
+    global $is_member, $is_guest, $is_super, $is_admin, $user;
     $template = $siteConfig['template'] ?? 'basic';
     $footerPath = CM_TEMPLATE_PATH . '/' . $template . '/footer.php';
     if (!file_exists($footerPath)) {
@@ -144,9 +146,11 @@ function include_footer($siteConfig = []) {
 }
 
 function include_admin_header($title = '') {
+    global $is_member, $is_guest, $is_super, $is_admin, $user, $csrf_token;
     include CM_LAYOUT_PATH . '/admin_header.php';
 }
 
 function include_admin_footer() {
+    global $is_member, $is_guest, $is_super, $is_admin, $user;
     include CM_LAYOUT_PATH . '/admin_footer.php';
 }

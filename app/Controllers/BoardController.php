@@ -107,19 +107,21 @@ class BoardController extends BaseController {
         }
 
         // Apply View Points (only if logged in and not the author/admin)
-        if (isset($_SESSION['user']) && $_SESSION['user']['role'] !== 'admin' && $_SESSION['user']['user_id'] !== $post['user_id']) {
+        global $is_member, $user, $is_admin;
+        if ($is_member && !$is_admin && $user['user_id'] !== $post['user_id']) {
             $viewPoint = (int)($post['point_view'] ?? 0);
             if ($viewPoint != 0) {
                 // To prevent point draining on refresh, only deduct once per session per post
                 $viewKey = 'viewed_post_' . $id;
                 if (!isset($_SESSION[$viewKey])) {
                     // Check if enough points for deduction
-                    if ($viewPoint < 0 && $_SESSION['user']['point'] < abs($viewPoint)) {
+                    if ($viewPoint < 0 && $user['point'] < abs($viewPoint)) {
                         alert('Not enough points to view this post.');
                     }
                     
-                    add_point($_SESSION['user']['user_id'], $viewPoint, 'Post View: ' . $post['title']);
-                    $_SESSION['user']['point'] += $viewPoint; // Sync session
+                    add_point($user['user_id'], $viewPoint, 'Post View: ' . $post['title']);
+                    $_SESSION['user']['point'] += $viewPoint; // Update session
+                    setup_user_variables(); // Sync globals
                     $_SESSION[$viewKey] = true;
                 }
             }
@@ -185,7 +187,8 @@ class BoardController extends BaseController {
     }
 
     public function write($vars) {
-        if (!isset($_SESSION['user'])) {
+        global $is_member;
+        if (!$is_member) {
             $this->redirect('/login');
         }
 
@@ -207,11 +210,12 @@ class BoardController extends BaseController {
             $title = $_POST['title'] ?? '';
             $content = $_POST['content'] ?? '';
             
+            global $user;
             $stmt = $db->prepare("INSERT INTO posts (group_id, board_id, user_id, title, content) VALUES (:group_id, :board_id, :user_id, :title, :content)");
             $stmt->execute([
                 'group_id' => $board['group_id'],
                 'board_id' => $board['id'],
-                'user_id' => $_SESSION['user']['user_id'],
+                'user_id' => $user['user_id'],
                 'title' => $title,
                 'content' => $content
             ]);
@@ -219,8 +223,9 @@ class BoardController extends BaseController {
             
             // Backup logic for hosting environments where lastInsertId might fail
             if ($postId <= 0) {
+                 global $user;
                  $stmt = $db->prepare("SELECT id FROM posts WHERE user_id = :user_id ORDER BY id DESC LIMIT 1");
-                 $stmt->execute(['user_id' => $_SESSION['user']['user_id']]);
+                 $stmt->execute(['user_id' => $user['user_id']]);
                  $postId = (int)$stmt->fetchColumn();
             }
 
@@ -233,8 +238,10 @@ class BoardController extends BaseController {
             // Add points for posting
             $writePoint = (int)($board['point_write'] ?? 0);
             if ($writePoint != 0) {
-                add_point($_SESSION['user']['user_id'], $writePoint, 'Post Write: ' . $title);
-                $_SESSION['user']['point'] += $writePoint; // Sync session
+                global $user;
+                add_point($user['user_id'], $writePoint, 'Post Write: ' . $title);
+                $_SESSION['user']['point'] += $writePoint; // Update session
+                setup_user_variables(); // Sync globals
             }
             
             $this->redirect('/board/view/' . $postId);

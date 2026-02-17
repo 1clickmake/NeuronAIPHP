@@ -29,6 +29,7 @@ class ComposerStaticInitee96c748d5139c0ca29232bbbe2691c3
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
             'PhpOption\\' => 10,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'N' => 
         array (
@@ -88,6 +89,10 @@ class ComposerStaticInitee96c748d5139c0ca29232bbbe2691c3
         'PhpOption\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption',
+        ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
         'NeuronAI\\' => 
         array (

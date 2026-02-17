@@ -8,8 +8,8 @@
             <p class="blog-desc"><?= htmlspecialchars($board['description'] ?? '') ?></p>
         </div>
         <div style="display: flex; gap: 0.5rem; align-items: center;">
-            <?php if (isset($_SESSION['user'])): ?>
-                <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+            <?php if ($is_member): ?>
+                <?php if ($is_admin): ?>
                     <div class="admin-controls">
                         <div class="form-check" style="margin-bottom: 0;">
                             <input type="checkbox" id="check-all" class="form-check-input">
@@ -48,7 +48,7 @@
             $content_summary = mb_strimwidth(strip_tags($decoded_content), 0, 160, '...');
             ?>
             <div class="blog-item" onclick="location.href='/board/view/<?= $post['id'] ?>'" style="position: relative;">
-                <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
+                <?php if ($is_admin): ?>
                     <div style="position: absolute; top: 10px; left: 10px; z-index: 10;" onclick="event.stopPropagation();">
                         <input type="checkbox" name="post_ids[]" value="<?= $post['id'] ?>" class="form-check-input post-checkbox" style="width: 20px; height: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
                     </div>

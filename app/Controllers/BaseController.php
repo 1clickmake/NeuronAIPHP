@@ -30,6 +30,14 @@ class BaseController {
 
         // Always pass CSRF token to views
         $data['csrf_token'] = \App\Core\Csrf::getToken();
+
+        // Inject global user variables to views
+        global $is_member, $is_guest, $is_super, $is_admin, $user;
+        $data['is_member'] = $is_member;
+        $data['is_guest']  = $is_guest;
+        $data['is_super']  = $is_super;
+        $data['is_admin']  = $is_admin;
+        $data['user']      = $user;
         
         \App\Core\View::render($path, $data);
     }
@@ -46,7 +54,8 @@ class BaseController {
     }
 
     protected function checkAdmin() {
-        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
+        global $is_admin;
+        if (!$is_admin) {
             $this->redirect('/login');
         }
     }

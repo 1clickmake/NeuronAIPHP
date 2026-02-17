@@ -57,6 +57,10 @@
                 <i class="fa-solid fa-chart-line"></i> Visitors
             </a>
 
+            <a href="/admin/mail" id="link-mail">
+                <i class="fa-solid fa-envelope"></i> Mail Manager
+            </a>
+
             <?php 
             $pluginMenuItems = \App\Core\PluginManager::getInstance()->getAdminMenuItems();
             if (!empty($pluginMenuItems)): 
@@ -93,10 +97,10 @@
             <div class="topbar-right">
                 <div class="user-profile">
                     <div style="text-align: right; line-height: 1.2;">
-                        <div style="font-size: 0.85rem; font-weight: 600;"><?= htmlspecialchars($_SESSION['user']['username'] ?? 'Admin') ?></div>
-                        <div style="font-size: 0.7rem; color: var(--text-muted);"><?= strtoupper($_SESSION['user']['role'] ?? 'Admin') ?></div>
+                        <div style="font-size: 0.85rem; font-weight: 600;"><?= htmlspecialchars($user['username'] ?? 'Admin') ?></div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);"><?= strtoupper($is_super ? 'SUPER ADMIN' : ($is_admin ? 'ADMIN' : 'USER')) ?></div>
                     </div>
-                    <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['user']['username'] ?? 'A') ?>&background=6366f1&color=fff" alt="Profile">
+                    <img src="https://ui-avatars.com/api/?name=<?= urlencode($user['username'] ?? 'A') ?>&background=6366f1&color=fff" alt="Profile">
                 </div>
             </div>
         </header>

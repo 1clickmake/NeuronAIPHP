@@ -7,8 +7,8 @@
             <p class="basic-desc"><?= htmlspecialchars($board['description'] ?? '') ?></p>
         </div>
         <div style="display: flex; gap: 0.5rem; align-items: center;">
-            <?php if (isset($_SESSION['user'])): ?>
-                <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+            <?php if ($is_member): ?>
+                <?php if ($is_admin): ?>
                     <button class="btn btn-danger" id="btn-bulk-delete" style="display: none;" onclick="bulkDelete()">Delete Selected</button>
                 <?php endif; ?>
                 <a href="/board/write/<?= $board['slug'] ?>" class="btn btn-primary">✏️ Write Post</a>
@@ -23,7 +23,7 @@
 			<table class=" basic-table" style="min-width:1000px;">
 				<thead class="basic-table-head">
 					<tr>
-						<?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
+						<?php if ($is_admin): ?>
 							<th style="width: 40px;"><input type="checkbox" id="check-all" class="form-check-input"></th>
 						<?php endif; ?>
 						<th class="col-no">No.</th>
@@ -38,14 +38,14 @@
 				<tbody>
 					<?php if (empty($posts)): ?>
 					<tr>
-						<td colspan="<?= (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin') ? 8 : 7 ?>" class="empty-state">
+						<td colspan="<?= ($is_admin) ? 8 : 7 ?>" class="empty-state">
 							<?= !empty($search) ? 'No search results found.' : 'No posts yet. Be the first to write!' ?>
 						</td>
 					</tr>
 					<?php else: ?>
 						<?php foreach ($posts as $idx => $post): ?>
 						<tr class="post-row" onclick="location.href='/board/view/<?= $post['id'] ?>'">
-							<?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
+							<?php if ($is_admin): ?>
 								<td onclick="event.stopPropagation();"><input type="checkbox" name="post_ids[]" value="<?= $post['id'] ?>" class="form-check-input post-checkbox"></td>
 							<?php endif; ?>
 							<td class="cell-no"><?= $totalItems - (($page - 1) * $limit) - $idx ?></td>

@@ -49,6 +49,9 @@ session_set_cookie_params([
 ]);
 session_start();
 
+// 2.5 Initialize User Variables
+setup_user_variables();
+
 // Skip logging if installing or .env missing
 if (file_exists($envPath) && !str_starts_with($internalUri, '/install')) {
     log_visitor();

@@ -3,6 +3,44 @@
  * Global Utility Functions
  */
 
+// Global User Variables
+$is_member = false;
+$is_guest = true;
+$is_super = false;
+$is_admin = false;
+$user = [];
+
+/**
+ * Initialize user-related global variables from session
+ */
+function setup_user_variables() {
+    global $is_member, $is_guest, $is_super, $is_admin, $user;
+
+    if (isset($_SESSION['user']) && !empty($_SESSION['user'])) {
+        $user = $_SESSION['user'];
+        $is_member = true;
+        $is_guest = false;
+        
+        $level = isset($user['level']) ? (int)$user['level'] : 1;
+        
+        // 최고관리자 (Level 10)
+        if ($level >= 10) {
+            $is_super = true;
+        }
+        
+        // 일반 관리자 (Role is admin or level >= 5)
+        if ((isset($user['role']) && $user['role'] === 'admin') || $level >= 5) {
+            $is_admin = true;
+        }
+    } else {
+        $is_member = false;
+        $is_guest = true;
+        $is_super = false;
+        $is_admin = false;
+        $user = [];
+    }
+}
+
 /**
  * Clean strings for safe output
  */
@@ -60,10 +98,13 @@ function log_visitor() {
     // To prevent heavy DB writes, update last_active_at only once every 60 seconds per session
     if (isset($_SESSION['last_activity_time']) && ($now - $_SESSION['last_activity_time'] < 60)) {
         // But we still need to check if the date changed
+        // But we still need to check if the date changed
         if (isset($_SESSION['last_visit_date']) && $_SESSION['last_visit_date'] === $today) {
             return;
         }
     }
+
+    global $is_member, $user;
 
     $db = \App\Core\Database::getInstance();
     if (!$db) return;
@@ -135,11 +176,13 @@ function add_point($user_id, $point, $rel_msg = '') {
  * Admin always returns true
  */
 function check_level($required_level) {
+    global $is_admin, $is_member, $user;
+
     // If Admin, always pass
-    if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin') return true;
+    if ($is_admin) return true;
     
     // Default level for guest is 1
-    $user_level = isset($_SESSION['user']) ? (int)$_SESSION['user']['level'] : 1;
+    $user_level = $is_member ? (int)$user['level'] : 1;
     
     return $user_level >= (int)$required_level;
 }

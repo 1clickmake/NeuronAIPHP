@@ -8,7 +8,8 @@ use PDO;
 
 class AuthController extends BaseController {
     public function showLogin() {
-        if (isset($_SESSION['user'])) {
+        global $is_member;
+        if ($is_member) {
             $this->redirect('/');
         }
         $this->view('auth/login', ['csrf_token' => Csrf::getToken()]);
@@ -39,7 +40,10 @@ class AuthController extends BaseController {
             unset($_SESSION['rate_limit_login']);
             
             $_SESSION['user'] = $user;
-            $this->redirect($user['role'] === 'admin' ? '/admin' : '/');
+            setup_user_variables(); // Update global variables immediately
+            
+            global $is_admin;
+            $this->redirect($is_admin ? '/admin' : '/');
         } else {
             $this->view('auth/login', ['error' => 'Invalid User ID or password']);
         }
@@ -117,16 +121,19 @@ class AuthController extends BaseController {
 
     public function logout() {
         session_destroy();
+        $_SESSION = []; // Clear current session array
+        setup_user_variables(); // Reset global variables
         $this->redirect('/login');
     }
 
     public function mypage() {
-        if (!isset($_SESSION['user'])) {
+        global $is_member, $user;
+        if (!$is_member) {
             $this->redirect('/login');
         }
 
         $db = Database::getInstance();
-        $userId = $_SESSION['user']['id'];
+        $userId = $user['id'];
 
         // Get last 10 posts
         $stmt = $db->prepare("
@@ -141,13 +148,14 @@ class AuthController extends BaseController {
         $posts = $stmt->fetchAll();
 
         $this->view('auth/mypage', [
-            'user' => $_SESSION['user'],
+            'user' => $user,
             'posts' => $posts
         ]);
     }
 
     public function updateProfile() {
-        if (!isset($_SESSION['user'])) $this->redirect('/login');
+        global $is_member, $user;
+        if (!$is_member) $this->redirect('/login');
 
         if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
             $this->redirect('/mypage?error=csrf');
@@ -155,16 +163,16 @@ class AuthController extends BaseController {
         }
 
         $db = Database::getInstance();
-        $userId = $_SESSION['user']['id'];
+        $userId = $user['id'];
         
         $currentPassword = $_POST['current_password'] ?? '';
         
         // Verify current password
         $stmt = $db->prepare("SELECT password FROM users WHERE id = ?");
         $stmt->execute([$userId]);
-        $user = $stmt->fetch();
+        $dbUser = $stmt->fetch();
 
-        if (!$user || !password_verify($currentPassword, $user['password'])) {
+        if (!$dbUser || !password_verify($currentPassword, $dbUser['password'])) {
             $this->redirect('/mypage?error=password');
             return;
         }
@@ -186,12 +194,14 @@ class AuthController extends BaseController {
         $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
         $stmt->execute([$userId]);
         $_SESSION['user'] = $stmt->fetch();
+        setup_user_variables();
 
         $this->redirect('/mypage?updated=1');
     }
 
     public function deleteAccount() {
-        if (!isset($_SESSION['user'])) $this->redirect('/login');
+        global $is_member, $user;
+        if (!$is_member) $this->redirect('/login');
 
         if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
             $this->redirect('/mypage?error=csrf');
@@ -199,12 +209,14 @@ class AuthController extends BaseController {
         }
 
         $db = Database::getInstance();
-        $userId = $_SESSION['user']['id'];
+        $userId = $user['id'];
 
         $stmt = $db->prepare("DELETE FROM users WHERE id = ?");
         $stmt->execute([$userId]);
 
         session_destroy();
+        $_SESSION = [];
+        setup_user_variables();
         $this->redirect('/?deleted=1');
     }
 

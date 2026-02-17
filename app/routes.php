@@ -40,6 +40,12 @@ return function(FastRoute\RouteCollector $r) {
     $r->addRoute('POST', '/admin/point/update', ['App\Controllers\AdminController', 'updatePoint']);
     $r->addRoute('POST', '/admin/point/bulk-delete', ['App\Controllers\AdminController', 'bulkDeletePoints']);
     
+    // Mail Routes
+    $r->addRoute('GET', '/admin/mail', ['App\Controllers\AdminController', 'mailForm']);
+    $r->addRoute('POST', '/admin/mail/send', ['App\Controllers\AdminController', 'sendMail']);
+    $r->addRoute('GET', '/admin/mail/logs', ['App\Controllers\AdminController', 'mailLogs']);
+    $r->addRoute('POST', '/admin/mail/config', ['App\Controllers\AdminController', 'saveMailConfig']);
+
     // Page Manager Routes
     $r->addRoute('GET', '/admin/pages', ['App\Controllers\AdminController', 'pages']);
     $r->addRoute(['GET', 'POST'], '/admin/pages/create', ['App\Controllers\AdminController', 'createPage']);
