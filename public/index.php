@@ -117,22 +117,9 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     \App\Core\PluginManager::getInstance()->registerRoutes($r);
 });
 
-// Fetch method and URI from somewhere
+// Fetch method and URI
 $httpMethod = $_SERVER['REQUEST_METHOD'];
-$uri = $_SERVER['REQUEST_URI'];
-
-// Strip query string (?foo=bar) and decode URI
-if (false !== $pos = strpos($uri, '?')) {
-    $uri = substr($uri, 0, $pos);
-}
-$uri = rawurldecode($uri);
-
-// Strip subdirectory if running in one
-$scriptName = dirname($_SERVER['SCRIPT_NAME']);
-if ($scriptName !== '/' && strpos($uri, $scriptName) === 0) {
-    $uri = substr($uri, strlen($scriptName));
-}
-if ($uri === '') $uri = '/';
+$uri = $internalUri;
 
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 switch ($routeInfo[0]) {
