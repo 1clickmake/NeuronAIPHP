@@ -31,10 +31,10 @@ if ($board) {
 <div class="latest-blog-widget mb-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4>
-            <i class="fa-solid fa-pen-nib me-2" style="color: #10b981; font-size: 0.9rem;"></i>
+            <i class="fa-solid fa-pen-nib me-2 blog-icon"></i>
             <?= htmlspecialchars($board['title']) ?>
         </h4>
-        <a href="/board/<?= $board_slug ?>" class="text-muted text-decoration-none" style="font-size: 0.8rem; font-weight: 500;">
+        <a href="/board/<?= $board_slug ?>" class="text-muted text-decoration-none blog-more">
             View All <i class="fa-solid fa-angle-right ms-1"></i>
         </a>
     </div>
@@ -46,25 +46,25 @@ if ($board) {
             $summary = mb_strimwidth(strip_tags($decoded_content), 0, 200, '...');
         ?>
             <a href="/board/view/<?= $post['id'] ?>" class="blog-list-link text-decoration-none">
-                <div class="glass-card p-0 d-flex overflow-hidden" style="min-height: 140px;">
+                <div class="glass-card p-0 d-flex overflow-hidden blog-card-inner">
                     <?php if ($thumbnail): ?>
-                        <div class="blog-list-thumb" style="width: 200px; min-width: 200px; background: url('<?= htmlspecialchars($thumbnail) ?>') center/cover no-repeat;"></div>
+                        <div class="blog-list-thumb blog-thumb" style="background: url('<?= htmlspecialchars($thumbnail) ?>') center/cover no-repeat;"></div>
                     <?php endif; ?>
                     
                     <div class="p-4 flex-grow-1 d-flex flex-column justify-content-center">
                         <div class="d-flex align-items-center mb-2">
-                            <span class="text-muted" style="font-size: 0.75rem;"><i class="fa-regular fa-calendar me-1"></i> <?= date('Y.m.d', strtotime($post['created_at'])) ?></span>
+                            <span class="text-muted blog-date"><i class="fa-regular fa-calendar me-1"></i> <?= date('Y.m.d', strtotime($post['created_at'])) ?></span>
                             <?php if ((time() - strtotime($post['created_at'])) < 86400): ?>
-                                <span class="badge bg-danger ms-2" style="font-size: 0.5rem; padding: 0.1rem 0.3rem;">NEW</span>
+                                <span class="badge bg-danger ms-2 blog-new-badge">NEW</span>
                             <?php endif; ?>
-                            <span class="ms-auto text-muted" style="font-size: 0.75rem;">
+                            <span class="ms-auto text-muted blog-user">
                                 <i class="fa-solid fa-user me-1"></i> <?= htmlspecialchars($post['username']) ?>
                             </span>
                         </div>
-                        <h5 class="text-dark mb-2 text-truncate" style="font-weight: 700; line-height: 1.4;"><?= htmlspecialchars($post['title']) ?></h5>
-                        <p class="text-muted mb-0 line-clamp-2" style="font-size: 0.85rem; line-height: 1.6;"><?= htmlspecialchars($summary) ?></p>
+                        <h5 class="text-dark mb-2 text-truncate blog-title"><?= htmlspecialchars($post['title']) ?></h5>
+                        <p class="text-muted mb-0 line-clamp-2 blog-summary"><?= htmlspecialchars($summary) ?></p>
                         
-                        <div class="mt-2 d-flex align-items-center text-muted" style="font-size: 0.75rem;">
+                        <div class="mt-2 d-flex align-items-center text-muted blog-stats">
                              <span class="me-3"><i class="fa-solid fa-eye me-1"></i> <?= number_format($post['views'] ?? 0) ?></span>
                              <span><i class="fa-solid fa-comment me-1"></i> <?= number_format($post['comment_count']) ?></span>
                         </div>

@@ -29,7 +29,7 @@
                 <input type="text" name="subject" required placeholder="How can we help you?">
             </div>
 
-            <div class="form-group" style="margin-bottom: 2.5rem;">
+            <div class="form-group message-group">
                 <label>Message</label>
                 <textarea name="message" rows="5" required placeholder="Enter your message here..."></textarea>
             </div>
