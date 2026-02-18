@@ -3,7 +3,7 @@
 namespace Plugins\chatbot\Controllers;
 
 use App\Core\Database;
-use Plugins\aimanager\Services\AiService;
+use Plugins\chatbot\Services\AiService;
 
 class ChatbotController
 {
@@ -213,18 +213,14 @@ class ChatbotController
             
             $fullPrompt = "{$context}\n\nUser Question: {$message}\nAI Answer:";
 
-            if (class_exists('Plugins\aimanager\Services\AiService')) {
-                $aiService = new \Plugins\aimanager\Services\AiService();
-                $answer = $aiService->generate($fullPrompt);
-                
-                // Clean markdown code blocks if present
-                $answer = preg_replace('/^```(?:html|json)?\n?|```$/m', '', trim($answer));
-                
-                // Convert newlines to <br> tags for HTML display
-                $answer = nl2br($answer);
-            } else {
-                throw new \Exception("AI Manager plugin is required.");
-            }
+            $aiService = new AiService();
+            $answer = $aiService->generate($fullPrompt);
+
+            // Clean markdown code blocks if present
+            $answer = preg_replace('/^```(?:html|json)?\n?|```$/m', '', trim($answer));
+
+            // Convert newlines to <br> tags for HTML display
+            $answer = nl2br($answer);
 
             // 6. Store log in DB
             try {
@@ -325,6 +321,61 @@ class ChatbotController
         } else {
             header("Location: /admin/chatbot/logs?error=invalid_months");
         }
+        exit;
+    }
+
+    public function config()
+    {
+        $db = Database::getInstance();
+        $config = $db->query("SELECT * FROM ai_config WHERE id = 1")->fetch();
+
+        \App\Core\View::render('plugins/chatbot/Views/admin_config', [
+            'config' => $config
+        ]);
+    }
+
+    public function saveConfig()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /admin/chatbot/config');
+            exit;
+        }
+
+        if (!\App\Core\Csrf::verify($_POST['csrf_token'] ?? '')) {
+            die("CSRF Validation Failed");
+        }
+
+        $db = Database::getInstance();
+
+        $useChatbot = isset($_POST['use_chatbot']) ? 1 : 0;
+        $limitGuest = intval($_POST['chatbot_limit_guest'] ?? 5);
+        $limitMember = intval($_POST['chatbot_limit_member'] ?? 20);
+        $defaultModel = trim($_POST['default_model'] ?? 'gpt-4o');
+
+        $openai = trim($_POST['openai_key'] ?? '');
+        $gemini = trim($_POST['gemini_key'] ?? '');
+        $claude = trim($_POST['claude_key'] ?? '');
+        $groq   = trim($_POST['groq_key'] ?? '');
+
+        // Update settings
+        $sql = "UPDATE ai_config SET
+                use_chatbot = ?,
+                chatbot_limit_guest = ?,
+                chatbot_limit_member = ?,
+                default_model = ?,
+                openai_key = ?,
+                gemini_key = ?,
+                claude_key = ?,
+                groq_key = ?
+                WHERE id = 1";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute([
+            $useChatbot, $limitGuest, $limitMember, $defaultModel,
+            $openai, $gemini, $claude, $groq
+        ]);
+
+        header('Location: /admin/chatbot/config?success=1');
         exit;
     }
 }

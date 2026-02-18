@@ -18,7 +18,7 @@
 - ✅ **반응형 디자인**: 모바일/태블릿/데스크톱 완벽 대응
 - ✅ **다중 게시판 스킨**: Basic, Gallery, Blog 스킨 지원
 
-### �️ **보안 (PRODUCTION READY)**
+### 🔒 **보안 (PRODUCTION READY)**
 - ✅ **CSRF 보호**: 모든 POST 폼에 토큰 적용
 - ✅ **XSS 방지**: 헬퍼 함수를 통한 안전한 출력
 - ✅ **SQL Injection 방지**: PDO Prepared Statement 사용
@@ -41,6 +41,30 @@
 - ✅ **커스텀 페이징**: 게시판별 설정 가능
 - ✅ **파일 업로드**: 다중 업로드, 자동 리사이징
 - ✅ **포인트 시스템**: 레벨/포인트 관리
+
+---
+
+## 🧩 플러그인 시스템
+
+이 프로젝트는 강력한 플러그인 아키텍처를 지원합니다. 플러그인은 `plugins/` 디렉토리에 위치하며, 독립적으로 동작할 수 있습니다.
+
+### 🤖 Chatbot Plugin (Standalone)
+**위치:** `plugins/chatbot/`
+
+Neuron AI 기반의 챗봇 플러그인입니다. 사이트의 콘텐츠(게시글, 페이지, FAQ)를 학습하여 사용자 질문에 자동으로 답변합니다.
+
+- **독립 실행 가능**: AI Manager 플러그인 없이도 단독으로 설치 및 실행이 가능합니다.
+- **설정**: 관리자 페이지 > Chatbot Settings에서 API Key 및 동작 방식을 설정할 수 있습니다.
+- **주요 기능**:
+    - 대화형 인터페이스 (화면 우측 하단 위젯)
+    - 사이트 지식 기반 답변 (RAG)
+    - 회원/비회원별 질문 제한 설정
+    - 대화 로그 저장 및 관리
+
+### 🧠 AI Manager Plugin
+**위치:** `plugins/ai-manager/`
+
+사이트 전반에 걸친 AI 기능을 관리합니다. 관리자 페이지에서의 AI 글쓰기 보조 등을 제공합니다.
 
 ---
 
@@ -106,10 +130,11 @@ ai_php/
 │   └── config.php        # 전역 설정
 ├── lib/
 │   └── common.lib.php    # 공통 함수 라이브러리
+├── plugins/              # 확장 플러그인 (Chatbot, AI Manager)
 ├── public/               # 웹 루트
 │   ├── index.php         # 진입점
-│   ├── css/              # 스타일시트
-│   ├── js/               # JavaScript
+│   ├── css/              # 스타일시트 (style.css, latest.css 등)
+│   ├── js/               # JavaScript (app.js, admin.js 등)
 │   └── data/             # 업로드 파일 (.htaccess 보호)
 ├── views/
 │   ├── layout/           # 공통 레이아웃
@@ -121,8 +146,7 @@ ai_php/
 ├── composer.json
 ├── setup.sql             # DB 스키마
 ├── SECURITY.md           # 보안 가이드
-├── REFACTOR_PLAN.md      # 보안 감사 및 개선 사항
-└── project.txt           # 개발 이력
+└── REFACTOR_PLAN.md      # 보안 감사 및 개선 사항
 ```
 
 ---
@@ -149,7 +173,6 @@ ai_php/
 
 - **[SECURITY.md](SECURITY.md)** - 보안 구현 가이드 및 Best Practices
 - **[REFACTOR_PLAN.md](REFACTOR_PLAN.md)** - 보안 감사 및 리팩토링 계획
-- **[project.txt](project.txt)** - 전체 개발 이력 및 변경 사항
 
 ---
 
@@ -194,7 +217,7 @@ ai_php/
 
 ---
 
-## � 라이선스
+## 📄 라이선스
 
 이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
 
