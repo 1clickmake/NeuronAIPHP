@@ -14,7 +14,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/latest.css" rel="stylesheet"> <!-- 최신글 위젯 스타일 -->
     <link href="/css/formmail.css" rel="stylesheet"> <!-- 폼메일 위젯 스타일 -->
-    <link href="/css/style.css" rel="stylesheet"> <!-- 통합 스타일 -->
 
 	<!-- 템플릿 전용 CSS 동적 로드 -->
     <?= load_template_assets($siteConfig ?? []) ?>
