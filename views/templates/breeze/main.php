@@ -50,5 +50,24 @@
     </div>
 </div>
 
+<style>
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.breeze-board-link:hover {
+    border-color: #06b6d4 !important;
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(59, 130, 246, 0.1)) !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 25px rgba(6, 182, 212, 0.2) !important;
+}
+</style>
 
 <?php include_footer($siteConfig); ?>

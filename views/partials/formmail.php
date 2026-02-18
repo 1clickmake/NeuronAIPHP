@@ -43,3 +43,40 @@
     </div>
 </section>
 
+<script>
+async function submitContactForm(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn-submit-contact');
+    const originalContent = btn.innerHTML;
+    
+    // Disable button & show loading
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+    
+    const formData = new FormData(e.target);
+    const data = {};
+    formData.forEach((value, key) => data[key] = value);
+    
+    try {
+        const response = await fetch('/contact/send', {
+            method: 'POST',
+            body: formData // Use FormData directly as it's standard
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('Your message has been sent successfully!');
+            e.target.reset();
+        } else {
+            alert('Error: ' + (result.message || 'Something went wrong.'));
+        }
+    } catch (error) {
+        console.error('Contact Form Error:', error);
+        alert('Failed to send message. Please try again later.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalContent;
+    }
+}
+</script>

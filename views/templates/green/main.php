@@ -54,5 +54,60 @@
     </div>
 </div>
 
+<style>
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes grow {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+@keyframes leafFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-8px) rotate(5deg);
+    }
+}
+
+@keyframes naturalBreath {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+}
+
+.green-board-link:hover {
+    border-color: #10b981 !important;
+    background: linear-gradient(135deg, rgba(132, 204, 22, 0.15), rgba(16, 185, 129, 0.12)) !important;
+    transform: translateX(5px) scale(1.01) !important;
+    box-shadow: 0 8px 30px rgba(16, 185, 129, 0.25) !important;
+}
+
+.green-board-link::before {
+    content: '🌿';
+    position: absolute;
+    right: 1rem;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.green-board-link:hover::before {
+    opacity: 0.3;
+    right: 0.5rem;
+}
+</style>
 
 <?php include_footer($siteConfig); ?>
