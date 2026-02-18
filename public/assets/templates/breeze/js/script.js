@@ -10,4 +10,7 @@ $(document).ready(function() {
     }).on('mouseout', function() {
         $(this).css('text-shadow', 'none');
     });
+
+    // Subtle fade-in for cards (moved from footer.php)
+    $('.glass-card').css('opacity', 0).fadeTo(600, 1);
 });

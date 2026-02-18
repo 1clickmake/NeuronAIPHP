@@ -54,55 +54,5 @@
     </div>
 </div>
 
-<style>
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.corona-board-link::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.2), transparent);
-    transition: left 0.5s ease;
-}
-
-.corona-board-link:hover::before {
-    left: 100%;
-}
-
-.corona-board-link:hover {
-    border-color: #f97316 !important;
-    background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(249, 115, 22, 0.15)) !important;
-    transform: translateX(8px) scale(1.02) !important;
-    box-shadow: 0 8px 30px rgba(249, 115, 22, 0.3) !important;
-}
-</style>
 
 <?php include_footer($siteConfig); ?>
