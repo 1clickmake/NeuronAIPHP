@@ -102,9 +102,9 @@
     padding: 0.15rem 0.3rem;
 }
 
-.gallery-title {
+.gallery-latest-title {
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 1.0rem;
 }
 
 .gallery-meta {
@@ -138,7 +138,9 @@
     min-width: 200px;
 }
 
-.blog-date, .blog-user, .blog-stats {
+.blog-date,
+.blog-user,
+.blog-stats {
     font-size: 0.75rem;
 }
 
@@ -147,7 +149,7 @@
     padding: 0.1rem 0.3rem;
 }
 
-.blog-title {
+.blog-latest-title {
     font-weight: 700;
     line-height: 1.4;
 }
@@ -165,8 +167,13 @@
 }
 
 @media (max-width: 768px) {
-    .blog-list-thumb {
-        width: 120px !important;
-        min-width: 120px !important;
+    .blog-card-inner {
+        flex-direction: column;
+    }
+
+    .blog-thumb {
+        width: 100% !important;
+        min-width: 100% !important;
+        height: 200px;
     }
 }

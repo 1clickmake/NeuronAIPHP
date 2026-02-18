@@ -49,6 +49,10 @@
                 <i class="fa-solid fa-list-check"></i> Board Manager
             </a>
 
+            <a href="/admin/faq" id="link-faq">
+                <i class="fa-solid fa-question-circle"></i> FAQ Manager
+            </a>
+
             <a href="/admin/pages" id="link-pages">
                 <i class="fa-solid fa-file-lines"></i> Page Manager
             </a>

@@ -52,7 +52,7 @@ if ($board) {
                             <?php endif; ?>
                         </div>
                         <div class="p-2">
-                            <p class="text-dark text-truncate mb-0 gallery-title">
+                            <p class="text-dark text-truncate mb-0 gallery-latest-title">
                                 <?= htmlspecialchars($post['title']) ?>
                             </p>
                             <div class="d-flex justify-content-between align-items-center mt-1">

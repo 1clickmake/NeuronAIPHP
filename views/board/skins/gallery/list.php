@@ -35,25 +35,7 @@
         <?php foreach ($posts as $post): ?>
             <?php
             // ... (Thumbnail logic) ...
-            // 썸네일 우선순위 결정
-            $thumbnail = '';
-            
-            // 1순위: 첨부파일 이미지 (BoardController에서 SELECT 해옴)
-            if (!empty($post['first_file'])) {
-                $thumbnail = $post['first_file'];
-            } 
-            // 2순위: 에디터 본문 내 이미지 추출
-            else {
-                preg_match('/<img[^>]+src="([^">]+)"/i', $post['content'], $matches);
-                if (!empty($matches[1])) {
-                    $thumbnail = $matches[1];
-                }
-            }
-            
-            // 3순위: 이미지가 아예 없을 경우 기본 이미지
-            if (empty($thumbnail)) {
-                $thumbnail = '/assets/images/no-img.png'; // 실제 경로에 맞춰 수정 가능
-            }
+            $thumbnail = get_thumbnail($post, '/images/no-img.png');
             ?>
             <div class="gallery-item" onclick="location.href='/board/view/<?= $post['id'] ?>'" style="position: relative;">
                 <?php if ($is_admin): ?>

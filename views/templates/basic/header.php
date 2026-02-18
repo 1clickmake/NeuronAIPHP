@@ -25,6 +25,7 @@ include CM_LAYOUT_PATH . '/header.php';
         <div class="navbar-actions">
             <!-- PC Nav Links -->
             <div class="nav-links">
+                <a href="/faq">FAQ</a>
                 <?php if ($is_member): ?>
                     <?php if ($is_admin): ?>
                         <a href="/admin"><i class="fa-solid fa-gauge-high"></i> Admin Panel</a>
@@ -89,6 +90,9 @@ include CM_LAYOUT_PATH . '/header.php';
 
                 <a href="/" class="mobile-nav-item">
                     <i class="fa-solid fa-house"></i> Home 
+                </a>
+                <a href="/faq" class="mobile-nav-item">
+                    <i class="fa-solid fa-question-circle"></i> FAQ
                 </a>
                 
                 <?php

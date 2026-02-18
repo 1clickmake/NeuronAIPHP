@@ -221,7 +221,7 @@ function update_level($user_id) {
 /**
  * Generate pagination HTML
  */
-function get_pagination($page, $totalPages, $search = '', $pageLimit = 5) {
+function get_pagination($page, $totalPages, $extraQuery = '', $pageLimit = 5) {
     if ($totalPages <= 1) return '';
 
     // Use .pagination-container class instead of inline styles
@@ -234,25 +234,32 @@ function get_pagination($page, $totalPages, $search = '', $pageLimit = 5) {
         $startPage = max(1, $endPage - $pageLimit + 1);
     }
     
-    $searchQuery = $search ? '&search=' . urlencode($search) : '';
+    $queryStr = '';
+    if ($extraQuery) {
+        // If it looks like a full query part (contains =), use it directly, otherwise prefix with search=
+        if (strpos($extraQuery, '=') !== false) {
+            $queryStr = '&' . $extraQuery;
+        } else {
+            $queryStr = '&search=' . urlencode($extraQuery);
+        }
+    }
 
     // First & Prev
     if ($page > 1) {
-        $html .= '<a href="?page=1' . $searchQuery . '" class="btn btn-page" title="First"><i class="fa-solid fa-angles-left"></i></a>';
-        $html .= '<a href="?page=' . ($page - 1) . $searchQuery . '" class="btn btn-page" title="Prev"><i class="fa-solid fa-angle-left"></i></a>';
+        $html .= '<a href="?page=1' . $queryStr . '" class="btn btn-page" title="First"><i class="fa-solid fa-angles-left"></i></a>';
+        $html .= '<a href="?page=' . ($page - 1) . $queryStr . '" class="btn btn-page" title="Prev"><i class="fa-solid fa-angle-left"></i></a>';
     }
 
     // Page Numbers
     for ($i = $startPage; $i <= $endPage; $i++) {
-        // Use .btn-page-active for current page, .btn-page for others
         $activeClass = ($i == $page) ? 'btn-page-active' : 'btn-page';
-        $html .= "<a href=\"?page={$i}{$searchQuery}\" class=\"btn {$activeClass}\">{$i}</a>";
+        $html .= "<a href=\"?page={$i}{$queryStr}\" class=\"btn {$activeClass}\">{$i}</a>";
     }
 
     // Next & Last
     if ($page < $totalPages) {
-        $html .= '<a href="?page=' . ($page + 1) . $searchQuery . '" class="btn btn-page" title="Next"><i class="fa-solid fa-angle-right"></i></a>';
-        $html .= '<a href="?page=' . $totalPages . $searchQuery . '" class="btn btn-page" title="Last"><i class="fa-solid fa-angles-right"></i></a>';
+        $html .= '<a href="?page=' . ($page + 1) . $queryStr . '" class="btn btn-page" title="Next"><i class="fa-solid fa-angle-right"></i></a>';
+        $html .= '<a href="?page=' . $totalPages . $queryStr . '" class="btn btn-page" title="Last"><i class="fa-solid fa-angles-right"></i></a>';
     }
 
     $html .= '</div>';

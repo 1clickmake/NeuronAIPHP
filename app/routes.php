@@ -47,6 +47,13 @@ return function(FastRoute\RouteCollector $r) {
     $r->addRoute('POST', '/admin/mail/config', ['App\Controllers\AdminController', 'saveMailConfig']);
     $r->addRoute('POST', '/admin/mail/bulk-delete', ['App\Controllers\AdminController', 'bulkDeleteMailLogs']);
 
+    // FAQ Manager Routes
+    $r->addRoute('GET', '/admin/faq', ['App\Controllers\AdminController', 'faq']);
+    $r->addRoute('POST', '/admin/faq/config', ['App\Controllers\AdminController', 'updateFaqConfig']);
+    $r->addRoute('POST', '/admin/faq/create', ['App\Controllers\AdminController', 'createFaq']);
+    $r->addRoute('POST', '/admin/faq/update', ['App\Controllers\AdminController', 'updateFaq']);
+    $r->addRoute('POST', '/admin/faq/delete', ['App\Controllers\AdminController', 'deleteFaq']);
+
     // Page Manager Routes
     $r->addRoute('GET', '/admin/pages', ['App\Controllers\AdminController', 'pages']);
     $r->addRoute(['GET', 'POST'], '/admin/pages/create', ['App\Controllers\AdminController', 'createPage']);
@@ -74,6 +81,9 @@ return function(FastRoute\RouteCollector $r) {
 
     // Generic Page Route (must be near bottom)
     $r->addRoute('GET', '/page/{slug}', ['App\Controllers\HomeController', 'page']);
+
+    // FAQ Route
+    $r->addRoute('GET', '/faq', ['App\Controllers\HomeController', 'faq']);
 
     // Frontend Routes
     $r->addRoute('GET', '/', ['App\Controllers\HomeController', 'index']);

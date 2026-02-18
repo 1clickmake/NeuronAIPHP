@@ -992,4 +992,143 @@ class AdminController extends BaseController {
         
         $this->redirect($redirectUrl);
     }
+
+    // --- FAQ Manager Methods ---
+
+    public function faq() {
+        $db = Database::getInstance();
+        
+        // 1. Get Categories
+        $config = $db->query("SELECT faq_category FROM config WHERE id = 1")->fetch();
+        $categories = isset($config['faq_category']) ? explode('|', $config['faq_category']) : [];
+
+        // 2. Filter by Category
+        $currentCategory = isset($_GET['category']) ? trim($_GET['category']) : '';
+        
+        // 3. Get FAQs with Pagination
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($page < 1) $page = 1;
+        $limit = 20;
+        $offset = ($page - 1) * $limit;
+
+        $faqs = [];
+        $totalItems = 0;
+        $totalPages = 0;
+
+        // Ensure table exists
+        try {
+            $where = "";
+            if ($currentCategory) {
+                $where = " WHERE category = :category ";
+            }
+
+            // Get Total Items
+            $stmt = $db->prepare("SELECT COUNT(*) FROM faq" . $where);
+            if ($currentCategory) {
+                $stmt->bindValue(':category', $currentCategory);
+            }
+            $stmt->execute();
+            $totalItems = $stmt->fetchColumn();
+            $totalPages = ceil($totalItems / $limit);
+
+            // Get Paginated Data
+            $stmt = $db->prepare("SELECT * FROM faq " . $where . " ORDER BY display_order ASC, created_at DESC LIMIT :limit OFFSET :offset");
+            if ($currentCategory) {
+                $stmt->bindValue(':category', $currentCategory);
+            }
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            $faqs = $stmt->fetchAll();
+
+        } catch (\PDOException $e) { 
+             // Table not found or other error
+        }
+
+        $this->view('admin/faq', [
+            'config_categories' => $config['faq_category'] ?? '',
+            'categories' => $categories,
+            'faqs' => $faqs,
+            'page' => $page,
+            'totalPages' => $totalPages,
+            'currentCategory' => $currentCategory
+        ]);
+    }
+
+    public function updateFaqConfig() {
+        if (!\App\Core\Csrf::verify($_POST['csrf_token'] ?? '')) die("CSRF validation failed");
+
+        $categories = $_POST['faq_category'] ?? '';
+        
+        $db = Database::getInstance();
+        $stmt = $db->prepare("UPDATE config SET faq_category = ? WHERE id = 1");
+        $stmt->execute([$categories]);
+
+        $this->redirect('/admin/faq?msg=Categories updated');
+    }
+
+    public function createFaq() {
+        if (!\App\Core\Csrf::verify($_POST['csrf_token'] ?? '')) die("CSRF validation failed");
+
+        $category = trim($_POST['category'] ?? '');
+        $question = trim($_POST['question'] ?? '');
+        $answer = trim($_POST['answer'] ?? '');
+        $order = intval($_POST['display_order'] ?? 0);
+
+        if ($category && $question && $answer) {
+            $db = Database::getInstance();
+            $stmt = $db->prepare("INSERT INTO faq (category, question, answer, display_order) VALUES (:category, :question, :answer, :order)");
+            $stmt->execute([
+                'category' => $category,
+                'question' => $question,
+                'answer' => $answer,
+                'order' => $order
+            ]);
+            
+            if (isset($_POST['faq_category_config']) && !empty($_POST['faq_category_config'])) {
+                $stmt = $db->prepare("UPDATE config SET faq_category = :config WHERE id = 1");
+                $stmt->execute(['config' => $_POST['faq_category_config']]);
+            }
+        }
+
+        $this->redirect('/admin/faq?msg=FAQ created');
+    }
+
+    public function updateFaq() {
+        if (!\App\Core\Csrf::verify($_POST['csrf_token'] ?? '')) die("CSRF validation failed");
+
+        $id = $_POST['id'] ?? null;
+        $category = trim($_POST['category'] ?? '');
+        $question = trim($_POST['question'] ?? '');
+        $answer = trim($_POST['answer'] ?? '');
+        $order = intval($_POST['display_order'] ?? 0);
+
+        if ($id && $category && $question && $answer) {
+            $db = Database::getInstance();
+            $stmt = $db->prepare("UPDATE faq SET category = :category, question = :question, answer = :answer, display_order = :order WHERE id = :id");
+            $stmt->execute([
+                'category' => $category,
+                'question' => $question,
+                'answer' => $answer,
+                'order' => $order,
+                'id' => $id
+            ]);
+        }
+
+        $this->redirect('/admin/faq?msg=FAQ updated');
+    }
+
+    public function deleteFaq() {
+        if (!\App\Core\Csrf::verify($_POST['csrf_token'] ?? '')) die("CSRF validation failed");
+
+        $id = $_POST['id'] ?? null;
+
+        if ($id) {
+            $db = Database::getInstance();
+            $stmt = $db->prepare("DELETE FROM faq WHERE id = ?");
+            $stmt->execute([$id]);
+        }
+
+        $this->redirect('/admin/faq?msg=FAQ deleted');
+    }
 }

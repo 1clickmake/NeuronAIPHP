@@ -61,7 +61,7 @@ if ($board) {
                                 <i class="fa-solid fa-user me-1"></i> <?= htmlspecialchars($post['username']) ?>
                             </span>
                         </div>
-                        <h5 class="text-dark mb-2 text-truncate blog-title"><?= htmlspecialchars($post['title']) ?></h5>
+                        <h5 class="text-dark mb-2 text-truncate blog-latest-title"><?= htmlspecialchars($post['title']) ?></h5>
                         <p class="text-muted mb-0 line-clamp-2 blog-summary"><?= htmlspecialchars($summary) ?></p>
                         
                         <div class="mt-2 d-flex align-items-center text-muted blog-stats">
