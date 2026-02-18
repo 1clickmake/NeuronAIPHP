@@ -37,11 +37,78 @@
     padding-left: 1.75rem !important;
 }
 
+.latest-posts-icon {
+    color: #6366f1;
+    font-size: 0.9rem;
+}
+
+.latest-posts-more {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.latest-posts-empty {
+    font-size: 0.9rem;
+}
+
+.post-date {
+    font-size: 0.75rem;
+    min-width: 40px;
+}
+
+.post-title {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.post-comment-count {
+    color: #6366f1;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.post-new-badge {
+    font-size: 0.55rem;
+    padding: 0.15rem 0.35rem;
+    border-radius: 3px;
+}
+
 /* Gallery Widget */
 .gallery-card-link:hover .glass-card {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     border-color: rgba(99, 102, 241, 0.3) !important;
+}
+
+.gallery-icon {
+    color: #ec4899;
+    font-size: 0.9rem;
+}
+
+.gallery-more {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.gallery-thumb-wrapper {
+    aspect-ratio: 1/1;
+    position: relative;
+}
+
+.gallery-new-badge {
+    top: 8px;
+    right: 8px;
+    font-size: 0.55rem;
+    padding: 0.15rem 0.3rem;
+}
+
+.gallery-title {
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.gallery-meta {
+    font-size: 0.7rem;
 }
 
 /* Blog Widget (List Style) */
@@ -50,6 +117,44 @@
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     border-color: rgba(16, 185, 129, 0.3) !important;
     background: rgba(255, 255, 255, 0.8);
+}
+
+.blog-icon {
+    color: #10b981;
+    font-size: 0.9rem;
+}
+
+.blog-more {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.blog-card-inner {
+    min-height: 140px;
+}
+
+.blog-thumb {
+    width: 200px;
+    min-width: 200px;
+}
+
+.blog-date, .blog-user, .blog-stats {
+    font-size: 0.75rem;
+}
+
+.blog-new-badge {
+    font-size: 0.5rem;
+    padding: 0.1rem 0.3rem;
+}
+
+.blog-title {
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.blog-summary {
+    font-size: 0.85rem;
+    line-height: 1.6;
 }
 
 .line-clamp-2 {

@@ -37,28 +37,28 @@ if ($board) {
 <div class="latest-posts-widget mb-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>
-            <i class="fa-solid fa-list-ul me-2" style="color: #6366f1; font-size: 0.9rem;"></i>
+            <i class="fa-solid fa-list-ul me-2 latest-posts-icon"></i>
             <?= htmlspecialchars($board['title']) ?>
         </h4>
-        <a href="/board/<?= $board_slug ?>" class="text-muted text-decoration-none" style="font-size: 0.8rem; font-weight: 500;">
+        <a href="/board/<?= $board_slug ?>" class="text-muted text-decoration-none latest-posts-more">
             More <i class="fa-solid fa-angle-right ms-1"></i>
         </a>
     </div>
     
     <div class="glass-card p-0 overflow-hidden">
         <?php if (empty($posts)): ?>
-            <div class="p-4 text-center text-muted" style="font-size: 0.9rem;">No posts found.</div>
+            <div class="p-4 text-center text-muted latest-posts-empty">No posts found.</div>
         <?php else: ?>
             <div class="list-group list-group-flush">
                 <?php foreach ($posts as $post): ?>
                     <a href="/board/view/<?= $post['id'] ?>" class="list-group-item list-group-item-action bg-transparent border-0 d-flex justify-content-between align-items-center py-2.5 px-4 post-item">
                         <div class="d-flex align-items-center overflow-hidden">
-                             <span class="text-muted me-3" style="font-size: 0.75rem; min-width: 40px;"><?= date('m-d', strtotime($post['created_at'])) ?></span>
-                             <span class="text-dark text-truncate" style="font-weight: 500; font-size: 0.9rem;">
+                             <span class="text-muted me-3 post-date"><?= date('m-d', strtotime($post['created_at'])) ?></span>
+                             <span class="text-dark text-truncate post-title">
                                 <?= htmlspecialchars($post['title']) ?>
                              </span>
                              <?php if ($post['comment_count'] > 0): ?>
-                                <span class="ms-2" style="color: #6366f1; font-size: 0.75rem; font-weight: 600;">
+                                <span class="ms-2 post-comment-count">
                                     [<?= $post['comment_count'] ?>]
                                 </span>
                              <?php endif; ?>
@@ -67,7 +67,7 @@ if ($board) {
                             $isNew = (time() - strtotime($post['created_at'])) < 86400;
                             if ($isNew):
                         ?>
-                            <span class="badge bg-danger ms-2" style="font-size: 0.55rem; padding: 0.15rem 0.35rem; border-radius: 3px;">N</span>
+                            <span class="badge bg-danger ms-2 post-new-badge">N</span>
                         <?php endif; ?>
                     </a>
                 <?php endforeach; ?>
