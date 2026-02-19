@@ -12,7 +12,8 @@
                         </span>
                     <?php endif; ?>
                 </a>
-                <p class="footer-desc">                    Experience the next generation of PHP development with Neuron AI Framework. 
+                <p class="footer-desc">
+                    Experience the next generation of PHP development with Neuron AI Framework. 
                     Premium design components and seamless high-performance architecture.
                 </p>
             </div>

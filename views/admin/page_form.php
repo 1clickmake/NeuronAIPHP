@@ -1,6 +1,6 @@
 <?php 
 $title = ($mode === 'create' ? 'Create Page' : 'Edit Page: ' . htmlspecialchars($page['title'] ?? ''));
-include CM_LAYOUT_PATH . '/admin_header.php'; 
+include CM_LAYOUT_PATH . '/admin_header.php';
 ?>
 
 <!-- Quill.js Dependencies -->
@@ -26,38 +26,60 @@ include CM_LAYOUT_PATH . '/admin_header.php';
             </div>
         </div>
 
+        <div class="admin-grid" style="margin-bottom: 2rem;">
+            <div class="form-group d-flex align-items-center gap-3">
+                <label class="form-label mb-0">Display Title</label>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="display_title" id="display_title" <?= ($page['display_title'] ?? 1) ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="display_title">Show title on page</label>
+                </div>
+            </div>
+            <div class="form-group d-flex align-items-center gap-3">
+                <label class="form-label mb-0">Container Style</label>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="use_card_style" id="use_card_style" <?= ($page['use_card_style'] ?? 1) ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="use_card_style">Show in styled card box</label>
+                </div>
+            </div>
+        </div>
+
         <div class="form-group" style="margin-bottom: 2rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
                 <label class="form-label" style="margin-bottom: 0;">Page Content</label>
                 <div class="d-flex align-items-center gap-2">
                     <?php do_action('admin_page_form_content_tools'); ?>
                     <div class="btn-group" role="group" style="background: rgba(255,255,255,0.1); padding: 4px; border-radius: 8px;">
-                        <input type="radio" class="btn-check" name="editor_mode" id="mode_visual" value="visual" checked autocomplete="off">
+                        <input type="radio" class="btn-check" name="editor_mode" id="mode_visual" value="visual" <?= ($page['editor_mode'] ?? 'visual') === 'visual' ? 'checked' : '' ?> autocomplete="off">
                         <label class="btn btn-sm" for="mode_visual" style="color: white; border: none; padding: 0.35rem 1rem;">Visual</label>
     
-                        <input type="radio" class="btn-check" name="editor_mode" id="mode_html" value="html" autocomplete="off">
+                        <input type="radio" class="btn-check" name="editor_mode" id="mode_html" value="html" <?= ($page['editor_mode'] ?? 'visual') === 'html' ? 'checked' : '' ?> autocomplete="off">
                         <label class="btn btn-sm" for="mode_html" style="color: white; border: none; padding: 0.25rem 0.75rem;">HTML</label>
                     </div>
                 </div>
             </div>
 
             <!-- Visual Editor Container -->
-            <div id="visual-editor-wrapper">
+            <div id="visual-editor-wrapper" style="<?= ($page['editor_mode'] ?? 'visual') === 'visual' ? '' : 'display: none;' ?>">
                 <div id="editor-container" style="height: 500px;">
                     
                 </div>
             </div>
 
             <!-- Raw HTML Textarea -->
-            <div id="html-editor-wrapper" style="display: none;">
+            <div id="html-editor-wrapper" style="<?= ($page['editor_mode'] ?? 'visual') === 'html' ? '' : 'display: none;' ?>">
                 <textarea id="html_content" class="form-control" style="height: 500px; font-family: monospace; font-size: 0.9rem;"><?= htmlspecialchars($_raw['page']['content'] ?? '') ?></textarea>
             </div>
 
             <input type="hidden" name="content" id="content_input">
         </div>
 
-        <div style="display: flex; gap: 1rem;">
+        <div style="display: flex; gap: 1rem; align-items: center;">
             <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem;">Save Page</button>
+            <?php if ($mode === 'edit' && !empty($page['slug'])): ?>
+                <a href="/page/<?= htmlspecialchars($page['slug']) ?>" target="_blank" class="btn" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); padding: 0.75rem 1.5rem;">
+                    <i class="fa-solid fa-eye me-1"></i> Preview
+                </a>
+            <?php endif; ?>
         </div>
     </form>
 </div>

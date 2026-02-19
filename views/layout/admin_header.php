@@ -15,6 +15,7 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-4.0.0-beta.min.js"></script>
     <meta name="csrf-token" content="<?= $csrf_token ?? '' ?>">
+    <?php do_action('admin_header_head'); ?>
 </head>
 <body class="admin-body">
 

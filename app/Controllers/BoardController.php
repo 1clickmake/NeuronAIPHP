@@ -209,15 +209,17 @@ class BoardController extends BaseController {
 
             $title = $_POST['title'] ?? '';
             $content = $_POST['content'] ?? '';
+            $editor_mode = $_POST['editor_mode'] ?? 'visual';
             
             global $user;
-            $stmt = $db->prepare("INSERT INTO posts (group_id, board_id, user_id, title, content) VALUES (:group_id, :board_id, :user_id, :title, :content)");
+            $stmt = $db->prepare("INSERT INTO posts (group_id, board_id, user_id, title, content, editor_mode) VALUES (:group_id, :board_id, :user_id, :title, :content, :editor_mode)");
             $stmt->execute([
                 'group_id' => $board['group_id'],
                 'board_id' => $board['id'],
                 'user_id' => $user['user_id'],
                 'title' => $title,
-                'content' => $content
+                'content' => $content,
+                'editor_mode' => $editor_mode
             ]);
             $postId = $db->lastInsertId();
             
@@ -275,11 +277,13 @@ class BoardController extends BaseController {
 
             $title = $_POST['title'] ?? '';
             $content = $_POST['content'] ?? '';
+            $editor_mode = $_POST['editor_mode'] ?? 'visual';
             
-            $stmt = $db->prepare("UPDATE posts SET title = :title, content = :content WHERE id = :id");
+            $stmt = $db->prepare("UPDATE posts SET title = :title, content = :content, editor_mode = :editor_mode WHERE id = :id");
             $stmt->execute([
                 'title' => $title,
                 'content' => $content,
+                'editor_mode' => $editor_mode,
                 'id' => $id
             ]);
 
@@ -484,15 +488,17 @@ class BoardController extends BaseController {
             if (!Csrf::verify($_POST['csrf_token'] ?? '')) die("CSRF validation failed");
             
             $content = $_POST['content'] ?? '';
+            $editor_mode = $_POST['editor_mode'] ?? 'visual';
 
-            $stmt = $db->prepare("INSERT INTO posts (group_id, board_id, user_id, parent_id, title, content, reply_depth) VALUES (:group_id, :board_id, :user_id, :parent_id, :title, :content, 1)");
+            $stmt = $db->prepare("INSERT INTO posts (group_id, board_id, user_id, parent_id, title, content, reply_depth, editor_mode) VALUES (:group_id, :board_id, :user_id, :parent_id, :title, :content, 1, :editor_mode)");
             $stmt->execute([
                 'group_id' => $parent['group_id'],
                 'board_id' => $parent['board_id'],
                 'user_id' => $_SESSION['user']['user_id'],
                 'parent_id' => $parentId,
                 'title' => 'RE: ' . $parent['title'],
-                'content' => $content
+                'content' => $content,
+                'editor_mode' => $editor_mode
             ]);
 
             $this->redirect('/board/view/' . $parentId);

@@ -67,9 +67,12 @@ class AdminController extends BaseController {
 
         // Handle Logo Image Upload
         if ($logoType === 'image' && isset($_FILES['logo_image']) && $_FILES['logo_image']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = '/data/config/';
+            $uploadDir = '/data/logo/';
             $fullPath = CM_PUBLIC_PATH . $uploadDir;
-            if (!is_dir($fullPath)) mkdir($fullPath, 0777, true);
+            if (!is_dir($fullPath)) {
+                mkdir($fullPath, 0707, true);
+                @chmod($fullPath, 0707);
+            }
 
             $ext = pathinfo($_FILES['logo_image']['name'], PATHINFO_EXTENSION);
             $newName = 'logo_' . time() . '.' . $ext;
@@ -118,7 +121,8 @@ class AdminController extends BaseController {
         $fullPath = CM_PUBLIC_PATH . $uploadDir;
 
         if (!is_dir($fullPath)) {
-            mkdir($fullPath, 0777, true);
+            mkdir($fullPath, 0707, true);
+            @chmod($fullPath, 0707);
         }
 
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
@@ -595,14 +599,20 @@ class AdminController extends BaseController {
             $title = $_POST['title'] ?? '';
             $slug = $_POST['slug'] ?: strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $title));
             $content = $_POST['content'] ?? '';
+            $display_title = isset($_POST['display_title']) ? 1 : 0;
+            $use_card_style = isset($_POST['use_card_style']) ? 1 : 0;
 
-            $stmt = $db->prepare("INSERT INTO pages (title, slug, content) VALUES (:title, :slug, :content)");
+            $stmt = $db->prepare("INSERT INTO pages (title, slug, content, display_title, use_card_style, editor_mode) VALUES (:title, :slug, :content, :display_title, :use_card_style, :editor_mode)");
             $stmt->execute([
                 'title' => $title,
                 'slug' => $slug,
-                'content' => $content
+                'content' => $content,
+                'display_title' => $display_title,
+                'use_card_style' => $use_card_style,
+                'editor_mode' => $_POST['editor_mode'] ?? 'visual'
             ]);
-            $this->redirect('/admin/pages');
+            $newId = $db->lastInsertId();
+            $this->redirect('/admin/pages/edit/' . $newId);
         } else {
             $this->view('admin/page_form', ['mode' => 'create']);
         }
@@ -616,15 +626,20 @@ class AdminController extends BaseController {
             $title = $_POST['title'] ?? '';
             $slug = $_POST['slug'] ?? '';
             $content = $_POST['content'] ?? '';
+            $display_title = isset($_POST['display_title']) ? 1 : 0;
+            $use_card_style = isset($_POST['use_card_style']) ? 1 : 0;
 
-            $stmt = $db->prepare("UPDATE pages SET title = :title, slug = :slug, content = :content WHERE id = :id");
+            $stmt = $db->prepare("UPDATE pages SET title = :title, slug = :slug, content = :content, display_title = :display_title, use_card_style = :use_card_style, editor_mode = :editor_mode WHERE id = :id");
             $stmt->execute([
                 'title' => $title,
                 'slug' => $slug,
                 'content' => $content,
+                'display_title' => $display_title,
+                'use_card_style' => $use_card_style,
+                'editor_mode' => $_POST['editor_mode'] ?? 'visual',
                 'id' => $id
             ]);
-            $this->redirect('/admin/pages');
+            $this->redirect('/admin/pages/edit/' . $id);
         } else {
             $page = $db->prepare("SELECT * FROM pages WHERE id = ?");
             $page->execute([$id]);

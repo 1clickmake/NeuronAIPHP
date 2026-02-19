@@ -2,8 +2,10 @@
 
 <div class="glass-card">
     <h1>Dashboard</h1>
-    <p class="text-muted-small" style="margin-top: 1rem;">Welcome to the Neuron AI Administration Panel. Manage your members and board configurations here.</p>
+    <p class="text-muted-small pb-2">Welcome to the Neuron AI Administration Panel. Manage your members and board configurations here.</p>
     
+    <?php do_action('admin_dashboard_before_grid'); ?>
+
     <div class="admin-grid" style="margin-top: 3rem;">
         <div class="glass-card" style="margin-bottom: 0; text-align: center;">
             <h3 class="text-primary-weight" style="font-size: 2rem;">Admin</h3>
@@ -18,6 +20,8 @@
             <p>Database</p>
         </div>
     </div>
+
+    <?php do_action('admin_dashboard_after_grid'); ?>
 </div>
 
 <script>

@@ -46,6 +46,9 @@ CREATE TABLE IF NOT EXISTS `pages` (
     `title` VARCHAR(255) NOT NULL COMMENT '페이지 제목',
     `slug` VARCHAR(100) NOT NULL UNIQUE COMMENT '페이지 URL 슬러그',
     `content` LONGTEXT NOT NULL COMMENT '페이지 내용',
+    `display_title` TINYINT(1) DEFAULT 1 COMMENT '제목 표시 여부',
+    `use_card_style` TINYINT(1) DEFAULT 1 COMMENT '카드 스타일 사용 여부',
+    `editor_mode` ENUM('visual', 'html') DEFAULT 'visual' COMMENT '에디터 모드',
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '생성 일시',
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정 일시',
     INDEX `idx_slug` (`slug`)
@@ -115,6 +118,7 @@ CREATE TABLE IF NOT EXISTS `posts` (
     `content` TEXT NOT NULL COMMENT '게시글 내용',
     `reply_depth` INT(11) DEFAULT 0 COMMENT '답글 깊이',
     `views` INT(11) DEFAULT 0 COMMENT '조회수',
+    `editor_mode` ENUM('visual', 'html') DEFAULT 'visual' COMMENT '에디터 모드',
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '작성 일시',
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정 일시',
     INDEX `idx_board_id` (`board_id`),

@@ -76,11 +76,18 @@ class InstallController extends BaseController {
 
             file_put_contents(__DIR__ . '/../../.env', $envContent);
             
-            // 5. Create data directory
-            $dataPath = __DIR__ . '/../../public/data';
-            if (!file_exists($dataPath)) {
-                mkdir($dataPath, 0707, true);
-                @chmod($dataPath, 0707); // Use @ to suppress potential warnings on some systems
+            // 5. Create data directory and essential sub-directories
+            $baseDataPath = __DIR__ . '/../../public/data';
+            $subDirs = ['', '/page', '/logo'];
+            
+            foreach ($subDirs as $sub) {
+                $path = $baseDataPath . $sub;
+                if (!file_exists($path)) {
+                    if (!mkdir($path, 0707, true)) {
+                        // If mkdir fails, we still try to proceed
+                    }
+                }
+                @chmod($path, 0707);
             }
 
             echo "<script>alert('Installation successful!'); window.location.href='/';</script>";

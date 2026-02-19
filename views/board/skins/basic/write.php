@@ -26,21 +26,21 @@ include_header($title, $siteConfig);
                 <div class="editor-mode-container">
                     <label class="editor-label">Content</label>
                     <div class="btn-group mode-switch-group" role="group">
-                        <input type="radio" class="btn-check" name="editor_mode" id="mode_visual" value="visual" checked autocomplete="off">
+                        <input type="radio" class="btn-check" name="editor_mode" id="mode_visual" value="visual" <?= ($post['editor_mode'] ?? 'visual') === 'visual' ? 'checked' : '' ?> autocomplete="off">
                         <label class="btn btn-sm btn-mode-label" for="mode_visual">Visual</label>
 
-                        <input type="radio" class="btn-check" name="editor_mode" id="mode_html" value="html" autocomplete="off">
+                        <input type="radio" class="btn-check" name="editor_mode" id="mode_html" value="html" <?= ($post['editor_mode'] ?? 'visual') === 'html' ? 'checked' : '' ?> autocomplete="off">
                         <label class="btn btn-sm btn-mode-label" for="mode_html">HTML</label>
                     </div>
                 </div>
 
                 <!-- Quill Editor Container -->
-                <div id="visual-editor-wrapper">
+                <div id="visual-editor-wrapper" style="<?= ($post['editor_mode'] ?? 'visual') === 'visual' ? '' : 'display: none;' ?>">
                     <div id="editor-container" class="editor-container-style"></div>
                 </div>
 
                 <!-- Raw HTML Textarea -->
-                <div id="html-editor-wrapper" style="display: none;">
+                <div id="html-editor-wrapper" style="<?= ($post['editor_mode'] ?? 'visual') === 'html' ? '' : 'display: none;' ?>">
                     <textarea id="html_content" class="form-control html-editor-textarea"><?= isset($post) ? htmlspecialchars($_raw['post']['content']) : '' ?></textarea>
                 </div>
                 
@@ -162,6 +162,16 @@ $(document).ready(function() {
             $('#visual-editor-wrapper').show();
         }
     });
+
+    // Initialize Visibility (in case JS loads after partial render or for state management)
+    const initialMode = $('input[name="editor_mode"]:checked').val();
+    if (initialMode === 'html') {
+        $('#visual-editor-wrapper').hide();
+        $('#html-editor-wrapper').show();
+    } else {
+        $('#html-editor-wrapper').hide();
+        $('#visual-editor-wrapper').show();
+    }
 
     // Handle form submission
     $('#writeForm').on('submit', function() {
