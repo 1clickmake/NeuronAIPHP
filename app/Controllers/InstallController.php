@@ -84,7 +84,7 @@ class InstallController extends BaseController {
             foreach ($subDirs as $sub) {
                 $path = $baseDataPath . $sub;
                 if (!file_exists($path)) {
-                    if (!mkdir($path, 0707, true)) {
+                    if (!@mkdir($path, 0707, true)) {
                         // If mkdir fails, we still try to proceed
                     }
                 }
