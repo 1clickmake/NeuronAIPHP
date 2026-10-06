@@ -44,6 +44,7 @@ class InstallController extends BaseController {
             // Reconnect to the created/existing database
             $pdo = new PDO("mysql:host=$dbHost;dbname=$dbName;charset=utf8mb4", $dbUser, $dbPass);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $pdo->exec("SET SESSION sql_mode = ''");
 
             // 2. Run setup.sql
             if (file_exists(__DIR__ . '/../../views/install/setup.sql')) {

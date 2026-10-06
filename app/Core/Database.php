@@ -16,7 +16,7 @@ class Database {
         $pass = $_ENV['DB_PASS'] ?? null;
 
         if (!$host || !$db || !$user) {
-            return;
+            throw new PDOException("Database configuration is missing. Please check your .env file.");
         }
 
         try {

@@ -28,15 +28,16 @@
         </a>
 
         <div class="sidebar-nav">
-            <div class="nav-category">Main Menu</div>
+            <!-- Category 1: 커뮤니티 (Community) -->
+            <div class="nav-category">
+                <i class="fa-solid fa-users-gear"></i> 커뮤니티 관리
+            </div>
             <a href="/admin" id="link-dashboard">
                 <i class="fa-solid fa-house"></i> Dashboard
             </a>
             <a href="/admin/config" id="link-config">
                 <i class="fa-solid fa-sliders"></i> Site Config
             </a>
-
-            <div class="nav-category">Management</div>
             <a href="/admin/users" id="link-users">
                 <i class="fa-solid fa-user-group"></i> User Manager
             </a>
@@ -49,23 +50,20 @@
             <a href="/admin/boards" id="link-boards">
                 <i class="fa-solid fa-list-check"></i> Board Manager
             </a>
-
             <a href="/admin/faq" id="link-faq">
                 <i class="fa-solid fa-question-circle"></i> FAQ Manager
             </a>
-
             <a href="/admin/pages" id="link-pages">
                 <i class="fa-solid fa-file-lines"></i> Page Manager
             </a>
-
             <a href="/admin/visitors" id="link-visitors">
                 <i class="fa-solid fa-chart-line"></i> Visitors
             </a>
-
             <a href="/admin/mail" id="link-mail">
                 <i class="fa-solid fa-envelope"></i> Mail Manager
             </a>
 
+            
             <?php 
             $pluginMenuItems = \App\Core\PluginManager::getInstance()->getAdminMenuItems();
             if (!empty($pluginMenuItems)): 

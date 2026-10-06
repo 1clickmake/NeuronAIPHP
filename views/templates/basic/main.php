@@ -15,7 +15,7 @@
 
         <p style="color: var(--text-muted); font-size: 1.2rem; max-width: 700px; margin: 0 auto;">
             A lightweight, high-performance PHP 8.1+ framework integration demo. 
-            Powered by Neuron AI for intelligent agent orchestration and a glassmorphism admin dashboard.
+            Powered by Neuron AI for intelligent agent orchestration and a glassmorphism admin dashboard.999
         </p>
 
         

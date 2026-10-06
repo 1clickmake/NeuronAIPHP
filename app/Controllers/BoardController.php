@@ -107,7 +107,9 @@ class BoardController extends BaseController {
         }
 
         // Apply View Points (only if logged in and not the author/admin)
-        global $is_member, $user, $is_admin;
+        $is_member = \App\Services\AuthService::isMember();
+        $user = \App\Services\AuthService::user();
+        $is_admin = \App\Services\AuthService::isAdmin();
         if ($is_member && !$is_admin && $user['user_id'] !== $post['user_id']) {
             $viewPoint = (int)($post['point_view'] ?? 0);
             if ($viewPoint != 0) {
@@ -187,7 +189,7 @@ class BoardController extends BaseController {
     }
 
     public function write($vars) {
-        global $is_member;
+        $is_member = \App\Services\AuthService::isMember();
         if (!$is_member) {
             $this->redirect('/login');
         }
@@ -211,7 +213,7 @@ class BoardController extends BaseController {
             $content = $_POST['content'] ?? '';
             $editor_mode = $_POST['editor_mode'] ?? 'visual';
             
-            global $user;
+            $user = \App\Services\AuthService::user();
             $stmt = $db->prepare("INSERT INTO posts (group_id, board_id, user_id, title, content, editor_mode) VALUES (:group_id, :board_id, :user_id, :title, :content, :editor_mode)");
             $stmt->execute([
                 'group_id' => $board['group_id'],
@@ -225,7 +227,7 @@ class BoardController extends BaseController {
             
             // Backup logic for hosting environments where lastInsertId might fail
             if ($postId <= 0) {
-                 global $user;
+                 $user = \App\Services\AuthService::user();
                  $stmt = $db->prepare("SELECT id FROM posts WHERE user_id = :user_id ORDER BY id DESC LIMIT 1");
                  $stmt->execute(['user_id' => $user['user_id']]);
                  $postId = (int)$stmt->fetchColumn();
@@ -240,7 +242,7 @@ class BoardController extends BaseController {
             // Add points for posting
             $writePoint = (int)($board['point_write'] ?? 0);
             if ($writePoint != 0) {
-                global $user;
+                $user = \App\Services\AuthService::user();
                 add_point($user['user_id'], $writePoint, 'Post Write: ' . $title);
                 $_SESSION['user']['point'] += $writePoint; // Update session
                 setup_user_variables(); // Sync globals

@@ -88,4 +88,6 @@ return function(FastRoute\RouteCollector $r) {
     // Frontend Routes
     $r->addRoute('GET', '/', ['App\Controllers\HomeController', 'index']);
     $r->addRoute('POST', '/contact/send', ['App\Controllers\HomeController', 'sendContact']);
+
+
 };

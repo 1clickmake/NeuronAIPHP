@@ -165,6 +165,25 @@
                 </div>
             </div>
         </div>
+        <!-- Section 6: Mall Settings -->
+        <h3 class="admin-section-header"><i class="fa-solid fa-cart-shopping"></i> Open Market Mall Settings</h3>
+        <div class="admin-section-container">
+            <div class="admin-grid">
+                <div class="form-group">
+                    <label class="form-label">Default Mall Commission (%)</label>
+                    <div class="input-group">
+                        <input type="number" name="mall_commission" class="form-control" value="<?= htmlspecialchars($config['mall_commission'] ?? 10) ?>" min="0" max="100">
+                        <span class="input-group-text">%</span>
+                    </div>
+                    <small class="text-muted-small">기본 판매 수수료입니다. 정산 시 자동으로 차감 계산됩니다.</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mall Service Name</label>
+                    <input type="text" name="mall_name" class="form-control" value="<?= htmlspecialchars($config['mall_name'] ?? 'Open Market') ?>" placeholder="e.g. Neuron Mall">
+                    <small class="text-muted-small">쇼핑몰 서비스 전용 노출 명칭입니다.</small>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 

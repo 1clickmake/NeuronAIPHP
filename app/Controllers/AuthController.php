@@ -8,7 +8,7 @@ use PDO;
 
 class AuthController extends BaseController {
     public function showLogin() {
-        global $is_member;
+        $is_member = \App\Services\AuthService::isMember();
         if ($is_member) {
             $this->redirect('/');
         }
@@ -42,7 +42,7 @@ class AuthController extends BaseController {
             $_SESSION['user'] = $user;
             setup_user_variables(); // Update global variables immediately
             
-            global $is_admin;
+            $is_admin = \App\Services\AuthService::isAdmin();
             $this->redirect($is_admin ? '/admin' : '/');
         } else {
             $this->view('auth/login', ['error' => 'Invalid User ID or password']);
@@ -127,13 +127,15 @@ class AuthController extends BaseController {
     }
 
     public function mypage() {
-        global $is_member, $user;
+        $is_member = \App\Services\AuthService::isMember();
+        $user = \App\Services\AuthService::user();
         if (!$is_member) {
             $this->redirect('/login');
         }
 
         $db = Database::getInstance();
         $userId = $user['id'];
+        $userStrId = $user['user_id'];
 
         // Get last 10 posts
         $stmt = $db->prepare("
@@ -154,7 +156,8 @@ class AuthController extends BaseController {
     }
 
     public function updateProfile() {
-        global $is_member, $user;
+        $is_member = \App\Services\AuthService::isMember();
+        $user = \App\Services\AuthService::user();
         if (!$is_member) $this->redirect('/login');
 
         if (!Csrf::verify($_POST['csrf_token'] ?? '')) {
@@ -200,7 +203,8 @@ class AuthController extends BaseController {
     }
 
     public function deleteAccount() {
-        global $is_member, $user;
+        $is_member = \App\Services\AuthService::isMember();
+        $user = \App\Services\AuthService::user();
         if (!$is_member) $this->redirect('/login');
 
         if (!Csrf::verify($_POST['csrf_token'] ?? '')) {

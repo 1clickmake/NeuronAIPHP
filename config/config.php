@@ -37,6 +37,10 @@ $baseUrl = str_replace('\\', '/', dirname($scriptName));
 if ($baseUrl === '/' || $baseUrl === '.') $baseUrl = '';
 
 define('CM_BASE_URL', $baseUrl);
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443 || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')) ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+define('CM_SITE_URL', $protocol . '://' . $host . CM_BASE_URL);
+
 define('CM_ADMIN_URL',  CM_BASE_URL . '/admin');
 define('CM_DATA_URL',   CM_BASE_URL . '/data'); // Removed /public as .htaccess handles it
 define('CM_ASSET_URL',  CM_BASE_URL . '/assets'); // Removed /public as .htaccess handles it
@@ -126,7 +130,12 @@ function load_template_scripts($config = []) {
 
 // Helper for including Header/Footer based on template
 function include_header($title = '', $siteConfig = []) {
-    global $is_member, $is_guest, $is_super, $is_admin, $user, $csrf_token;
+    $is_member = \App\Services\AuthService::isMember();
+    $is_guest  = \App\Services\AuthService::isGuest();
+    $is_super  = \App\Services\AuthService::isSuperAdmin();
+    $is_admin  = \App\Services\AuthService::isAdmin();
+    $user      = \App\Services\AuthService::user();
+    global $csrf_token;
     $template = $siteConfig['template'] ?? 'basic';
     $headerPath = CM_TEMPLATE_PATH . '/' . $template . '/header.php';
     if (!file_exists($headerPath)) {
@@ -136,7 +145,11 @@ function include_header($title = '', $siteConfig = []) {
 }
 
 function include_footer($siteConfig = []) {
-    global $is_member, $is_guest, $is_super, $is_admin, $user;
+    $is_member = \App\Services\AuthService::isMember();
+    $is_guest  = \App\Services\AuthService::isGuest();
+    $is_super  = \App\Services\AuthService::isSuperAdmin();
+    $is_admin  = \App\Services\AuthService::isAdmin();
+    $user      = \App\Services\AuthService::user();
     $template = $siteConfig['template'] ?? 'basic';
     $footerPath = CM_TEMPLATE_PATH . '/' . $template . '/footer.php';
     if (!file_exists($footerPath)) {
@@ -146,11 +159,20 @@ function include_footer($siteConfig = []) {
 }
 
 function include_admin_header($title = '') {
-    global $is_member, $is_guest, $is_super, $is_admin, $user, $csrf_token;
+    $is_member = \App\Services\AuthService::isMember();
+    $is_guest  = \App\Services\AuthService::isGuest();
+    $is_super  = \App\Services\AuthService::isSuperAdmin();
+    $is_admin  = \App\Services\AuthService::isAdmin();
+    $user      = \App\Services\AuthService::user();
+    global $csrf_token;
     include CM_LAYOUT_PATH . '/admin_header.php';
 }
 
 function include_admin_footer() {
-    global $is_member, $is_guest, $is_super, $is_admin, $user;
+    $is_member = \App\Services\AuthService::isMember();
+    $is_guest  = \App\Services\AuthService::isGuest();
+    $is_super  = \App\Services\AuthService::isSuperAdmin();
+    $is_admin  = \App\Services\AuthService::isAdmin();
+    $user      = \App\Services\AuthService::user();
     include CM_LAYOUT_PATH . '/admin_footer.php';
 }

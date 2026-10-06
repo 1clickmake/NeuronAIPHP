@@ -3,43 +3,7 @@
  * Global Utility Functions
  */
 
-// Global User Variables
-$is_member = false;
-$is_guest = true;
-$is_super = false;
-$is_admin = false;
-$user = [];
-
-/**
- * Initialize user-related global variables from session
- */
-function setup_user_variables() {
-    global $is_member, $is_guest, $is_super, $is_admin, $user;
-
-    if (isset($_SESSION['user']) && !empty($_SESSION['user'])) {
-        $user = $_SESSION['user'];
-        $is_member = true;
-        $is_guest = false;
-        
-        $level = isset($user['level']) ? (int)$user['level'] : 1;
-        
-        // 최고관리자 (Level 10)
-        if ($level >= 10) {
-            $is_super = true;
-        }
-        
-        // 일반 관리자 (Role is admin or level >= 5)
-        if ((isset($user['role']) && $user['role'] === 'admin') || $level >= 5) {
-            $is_admin = true;
-        }
-    } else {
-        $is_member = false;
-        $is_guest = true;
-        $is_super = false;
-        $is_admin = false;
-        $user = [];
-    }
-}
+// Global User Variables removed. Please use \App\Services\AuthService
 
 /**
  * Clean strings for safe output
@@ -104,7 +68,7 @@ function log_visitor() {
         }
     }
 
-    global $is_member, $user;
+    // Removed global variables
 
     $db = \App\Core\Database::getInstance();
     if (!$db) return;
@@ -176,13 +140,12 @@ function add_point($user_id, $point, $rel_msg = '') {
  * Admin always returns true
  */
 function check_level($required_level) {
-    global $is_admin, $is_member, $user;
-
     // If Admin, always pass
-    if ($is_admin) return true;
+    if (\App\Services\AuthService::isAdmin()) return true;
     
     // Default level for guest is 1
-    $user_level = $is_member ? (int)$user['level'] : 1;
+    $user = \App\Services\AuthService::user();
+    $user_level = \App\Services\AuthService::isMember() ? (int)$user['level'] : 1;
     
     return $user_level >= (int)$required_level;
 }
