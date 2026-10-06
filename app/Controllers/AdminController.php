@@ -690,39 +690,7 @@ class AdminController extends BaseController {
         echo json_encode(['error' => 'Upload failed']);
     }
 
-    public function createTemplate() {
-        if (!\App\Core\Csrf::verify($_POST['csrf_token'] ?? '')) die("CSRF validation failed");
 
-        $name = strtolower(trim($_POST['template_name'] ?? ''));
-        if (!$name || !preg_match('/^[a-z0-9_-]+$/', $name)) {
-            die("Invalid template name.");
-        }
-
-        // 1. Create Views Folder and Copy from 'basic' (Updated logic to copy folder)
-        $sourceViewPath = CM_VIEWS_PATH . '/templates/basic';
-        $targetViewPath = CM_VIEWS_PATH . '/templates/' . $name;
-        
-        // Ensure source exists
-        if (!is_dir($sourceViewPath)) {
-             die("Source template 'basic' not found.");
-        }
-
-        if (!is_dir($targetViewPath)) {
-            $this->recursiveCopy($sourceViewPath, $targetViewPath);
-        }
-
-        // 2. Create Public Assets Folder and Copy from 'basic'
-        // Note: Assets might be in public/assets/templates/basic
-        // Assuming CM_ASSET_PATH points to public/assets
-        $sourceAssetPath = CM_PUBLIC_PATH . '/assets/templates/basic';
-        $targetAssetPath = CM_PUBLIC_PATH . '/assets/templates/' . $name;
-        
-        if (is_dir($sourceAssetPath) && !is_dir($targetAssetPath)) {
-            $this->recursiveCopy($sourceAssetPath, $targetAssetPath);
-        }
-
-        $this->redirect('/admin/config?msg=Template created successfully');
-    }
 
     // --- Mail Methods ---
     public function mailForm() {
@@ -987,22 +955,7 @@ class AdminController extends BaseController {
         ]);
     }
 
-    private function recursiveCopy($src, $dst) {
-        if (!is_dir($dst)) {
-            mkdir($dst, 0777, true);
-        }
-        $dir = opendir($src);
-        while(false !== ($file = readdir($dir))) {
-            if (($file != '.') && ($file != '..')) {
-                if (is_dir($src . '/' . $file)) {
-                    $this->recursiveCopy($src . '/' . $file, $dst . '/' . $file);
-                } else {
-                    copy($src . '/' . $file, $dst . '/' . $file);
-                }
-            }
-        }
-        closedir($dir);
-    }
+
 
     public function bulkDeleteMailLogs() {
         if (!\App\Core\Csrf::verify($_POST['csrf_token'] ?? '')) die("CSRF validation failed");
