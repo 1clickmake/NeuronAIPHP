@@ -123,7 +123,7 @@ class BoardController extends BaseController {
                     
                     add_point($user['user_id'], $viewPoint, 'Post View: ' . $post['title']);
                     $_SESSION['user']['point'] += $viewPoint; // Update session
-                    setup_user_variables(); // Sync globals
+
                     $_SESSION[$viewKey] = true;
                 }
             }
@@ -245,7 +245,7 @@ class BoardController extends BaseController {
                 $user = \App\Services\AuthService::user();
                 add_point($user['user_id'], $writePoint, 'Post Write: ' . $title);
                 $_SESSION['user']['point'] += $writePoint; // Update session
-                setup_user_variables(); // Sync globals
+
             }
             
             $this->redirect('/board/view/' . $postId);

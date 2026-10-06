@@ -40,7 +40,7 @@ class AuthController extends BaseController {
             unset($_SESSION['rate_limit_login']);
             
             $_SESSION['user'] = $user;
-            setup_user_variables(); // Update global variables immediately
+
             
             $is_admin = \App\Services\AuthService::isAdmin();
             $this->redirect($is_admin ? '/admin' : '/');
@@ -122,7 +122,7 @@ class AuthController extends BaseController {
     public function logout() {
         session_destroy();
         $_SESSION = []; // Clear current session array
-        setup_user_variables(); // Reset global variables
+
         $this->redirect('/login');
     }
 
@@ -197,7 +197,7 @@ class AuthController extends BaseController {
         $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
         $stmt->execute([$userId]);
         $_SESSION['user'] = $stmt->fetch();
-        setup_user_variables();
+
 
         $this->redirect('/mypage?updated=1');
     }
@@ -220,7 +220,7 @@ class AuthController extends BaseController {
 
         session_destroy();
         $_SESSION = [];
-        setup_user_variables();
+
         $this->redirect('/?deleted=1');
     }
 
