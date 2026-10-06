@@ -42,8 +42,7 @@ class AuthController extends BaseController {
             $_SESSION['user'] = $user;
 
             
-            $is_admin = \App\Services\AuthService::isAdmin();
-            $this->redirect($is_admin ? '/admin' : '/');
+            $this->redirect('/');
         } else {
             $this->view('auth/login', ['error' => 'Invalid User ID or password']);
         }
